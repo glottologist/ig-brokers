@@ -1,6 +1,7 @@
 use crate::api::{Client, Config, IG};
-use crate::models::{Account as Acc, History, History2, Preferences, ResponseStatus};
+use crate::models::{Account as Acc, AccountHistory, AccountHistory2, Preferences, ResponseStatus, TransactionHistory, TransactionHistory2, TransactionHistoryParams};
 use chrono::NaiveDate;
+use std::collections::HashMap;
 
 pub struct Account {
 	client: Client
@@ -29,37 +30,54 @@ impl Account {
 	}
 
 	/// GET /history/activity
-	/// Returns the account history.
-	pub fn get_account_history(&self) -> History {
+	/// Returns the account activity history.
+	pub fn get_account_history(&self) -> AccountHistory {
 		let endpoint = String::from("/history/activity");
 		self.client.get_signed(&endpoint)
 	}
 
 	/// GET /history/activity/{fromDate}/{toDate}
-	pub fn get_account_history_with_dates(&self, from: &NaiveDate, to: &NaiveDate) -> History2 {
+	/// Returns the account activity history for the given date range.
+	pub fn get_account_history_with_dates(&self, from: &NaiveDate, to: &NaiveDate) -> AccountHistory2 {
 		let endpoint = format!("/history/activity/{}/{}", from, to);
 		self.client.get_signed(&endpoint)
 	}
 
 	/// GET /history/activity/{lastPeriod}
-	pub fn get_account_history_with_period(&self, period: &String) {
+	/// Returns the account activity history for the last specified period.
+	pub fn get_account_history_with_period(&self, period: &String) -> AccountHistory2 {
 		let endpoint = format!("/history/activity/{}", period);
 		self.client.get_signed(&endpoint)
 	}
 
 	/// GET /history/transactions
-	pub fn get_transaction_history(&self) {
+	/// Returns the transaction history.
+	/// By default returns the minute prices within the last 10 minutes.
+	pub fn get_transaction_history(&self, req: &TransactionHistoryParams) -> TransactionHistory {
+		let params: HashMap<String, String> = HashMap::new();
+		params.insert(String::from("type"), req.r#type.to_string());
+		params.insert(String::from("from"), req.from);
+		params.insert(String::from("to"), req.to);
+		params.insert(String::from("maxSpanSeconds"), req.max_span_seconds.to_string());
+		params.insert(String::from("pageSize"), req.page_size.to_string());
+		params.insert(String::from("page_number"), req.page_number.to_string());
 
+		let endpoint = String::from("/history/transactions");
+		self.client.get_with_params_signed(&endpoint, &params)
 	}
 
 	/// GET /history/transactions/{transactionType}/{fromDate}/{toDate}
-	pub fn get_transaction_history_with_dates(&self, ttype: &String, from: &NaiveDate, to: &NaiveDate) {
-
+	/// Returns the transaction history for the specified transaction type and given date range.
+	pub fn get_transaction_history_with_dates(&self, ttype: &String, from: &NaiveDate, to: &NaiveDate) -> TransactionHistory2 {
+		let endpoint = format!("/history/transactions/{}/{}/{}", ttype, from.to_string(), to.to_string());
+		self.client.get_signed(&endpoint)
 	}
 
 	/// GET /history/transactions/{transactionType}/{lastPeriod}
-	pub fn get_transaction_history_with_period(&self, ttype: &String, period: &String) {
-
+	/// Returns the transaction history for the specified transaction type and period.
+	pub fn get_transaction_history_with_period(&self, ttype: &String, period: &String) -> TransactionHistory2 {
+		let endpoint = format!("/history/transactions/{}/{}", ttype, period);
+		self.client.get_signed(&endpoint)
 	}
 }
 
