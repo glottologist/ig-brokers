@@ -20,7 +20,15 @@ impl Client {
 
 	}
 
+	pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
+
+	}
+
 	pub fn put_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
+
+	}
+
+	pub fn delete_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
 
 	}
 }
