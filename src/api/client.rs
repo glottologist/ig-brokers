@@ -24,7 +24,7 @@ impl Client {
 
 	}
 
-	pub fn put_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
+	pub fn put_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
 
 	}
 

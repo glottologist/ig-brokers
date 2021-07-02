@@ -58,7 +58,7 @@ impl Dealing {
 	/// Updates an OTC position.
 	pub fn update_position(&self, deal_id: &String, req: &UpdatePosition) {
 		let endpoint = format!("/positions/otc/{}", deal_id);
-		self.client.put_signed(&endpoint, req)
+		self.client.put_signed(&endpoint, &Some(req))
 	}
 
 	/// GET /positions/sprintmarkets
@@ -100,7 +100,7 @@ impl Dealing {
 	/// Updates an OTC working order.
 	pub fn update_working_order(&self, deal_id: &String, req: &UpdateWorkingOrder) -> DealRef {
 		let endpoint = format!("/workingorders/otc/{}", deal_id);
-		self.client.put_signed(&endpoint, req)
+		self.client.put_signed(&endpoint, &Some(req))
 	}
 }
 

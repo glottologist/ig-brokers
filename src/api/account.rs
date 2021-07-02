@@ -26,7 +26,7 @@ impl Account {
 	/// Updates account preferences.
 	pub fn update_preferences(&self, preferences: &Preferences) -> ResponseStatus {
 		let endpoint = String::from("/accounts/preferences");
-		self.client.put_signed(&endpoint, preferences)
+		self.client.put_signed(&endpoint, &Some(preferences))
 	}
 
 	/// GET /history/activity
