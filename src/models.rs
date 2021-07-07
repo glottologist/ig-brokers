@@ -12,3 +12,6 @@ pub use general::*;
 
 mod login;
 pub use login::*;
+
+mod markets;
+pub use markets::*;

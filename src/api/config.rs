@@ -5,13 +5,13 @@ pub struct Config {
 impl Config {
 	pub fn default() -> Config {
 		Config {
-			base_url: String::from("https://api.ig.com/gateway/deal")
+			base_url: String::from("api.ig.com/gateway/deal")
 		}
 	}
 
 	pub fn test() -> Config {
 		Config {
-			base_url: String::from("https://demo-api.ig.com/gateway/deal")
+			base_url: String::from("demo-api.ig.com/gateway/deal")
 		}
 	}
 }

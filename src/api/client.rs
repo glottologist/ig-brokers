@@ -1,34 +1,86 @@
 use crate::api::Config;
-use std::collections::HashMap;
+use crate::models::{LoginReq, LoginRes};
+use reqwest::Error;
+use reqwest::blocking::RequestBuilder;
+use reqwest::header::HeaderMap;
+use serde::de::DeserializeOwned;
 
 pub struct Client {
-	api_key: Option<String>,
-	api_secret: Option<String>,
+	account_id: String,
+	api_key: String,
+	username: String,
+	password: String,
+	client: reqwest::blocking::Client,
 	config: Config
 }
 
+fn get_url(config: &Config, endpoint: &String) -> String {
+	format!("https://{}{}", config.base_url, endpoint)
+}
+
 impl Client {
-	pub fn new(api_key: Option<String>, api_secret: Option<String>, config: Config) -> Client {
-		Client { api_key, api_secret, config }
+	pub fn new(account_id: String, api_key: String, username: String, password: String, config: Config) -> Client {
+		Client {
+			account_id,
+			api_key,
+			username,
+			password,
+			config,
+			client: reqwest::blocking::Client::new()
+		}
 	}
 
-	pub fn get_signed<T>(&self, endpoint: &String) -> T {
-
+	pub fn get_signed<T: DeserializeOwned>(&self, endpoint: &String) -> Result<T, Error> {
+		let url = get_url(&self.config, endpoint);
+		let req = self.set_headers(self.client.get(url))?;
+		let res = req.send()?;
+		Ok(res.json::<T>()?)
 	}
 
-	pub fn get_with_params_signed<T>(&self, endpoint: &String, params: &HashMap<String, String>) -> T {
+	fn get_token(&self) -> Result<LoginRes, Error> {
+		let login = LoginReq {
+			identifier: self.username.clone(),
+			password: self.password.clone()
+		};
 
+		let mut headers = HeaderMap::new();
+		headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
+		headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
+		headers.insert("VERSION", "3".parse().unwrap());
+
+		let url = get_url(&self.config, &"/session".into());
+		let res = self.client.post(&url).headers(headers).json(&login).send()?;
+		res.json::<LoginRes>()
 	}
 
-	pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
+	fn set_headers(&self, req: RequestBuilder) -> Result<RequestBuilder, Error> {
+		let token = self.get_token()?;
+		let authorization = format!("Bearer {}", token.oauth_token.access_token);
 
+		// Set the headers for the subsequent request
+		let mut headers = HeaderMap::new();
+		headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
+		headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
+		headers.insert("Authorization", authorization.parse().unwrap());
+		// headers.insert("Content-Type", "application/json".parse().unwrap());
+		// headers.insert("Accept", "application/json; charset=UTF-8".parse().unwrap());
+		headers.insert("VERSION", "1".parse().unwrap());
+		Ok(req.headers(headers))
 	}
 
-	pub fn put_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
+	// pub fn get_with_params_signed<T>(&self, endpoint: &String, params: &HashMap<String, String>) -> T {
+	// 	let res = reqwest::post
+	// }
 
-	}
+	// pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
 
-	pub fn delete_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
+	// }
 
-	}
+	// pub fn put_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
+
+	// }
+
+	// pub fn delete_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
+
+	// }
 }
