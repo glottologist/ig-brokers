@@ -3,6 +3,7 @@ use crate::models::{LoginReq, LoginRes};
 use reqwest::Error;
 use reqwest::blocking::RequestBuilder;
 use reqwest::header::HeaderMap;
+use serde::Serialize;
 use serde::de::DeserializeOwned;
 
 pub struct Client {
@@ -37,6 +38,18 @@ impl Client {
 		Ok(res.json::<T>()?)
 	}
 
+	pub fn put_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, data: &Option<U>) -> Result<T, Error> {
+		let url = get_url(&self.config, endpoint);
+		let mut req = self.set_headers(self.client.put(url))?;
+
+		if let Some(body) = data {
+			req = req.json(&body);
+		}
+
+		let res = req.send()?;
+		Ok(res.json::<T>()?)
+	}
+
 	fn get_token(&self) -> Result<LoginRes, Error> {
 		let login = LoginReq {
 			identifier: self.username.clone(),
@@ -57,13 +70,10 @@ impl Client {
 		let token = self.get_token()?;
 		let authorization = format!("Bearer {}", token.oauth_token.access_token);
 
-		// Set the headers for the subsequent request
 		let mut headers = HeaderMap::new();
 		headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
 		headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
 		headers.insert("Authorization", authorization.parse().unwrap());
-		// headers.insert("Content-Type", "application/json".parse().unwrap());
-		// headers.insert("Accept", "application/json; charset=UTF-8".parse().unwrap());
 		headers.insert("VERSION", "1".parse().unwrap());
 		Ok(req.headers(headers))
 	}
@@ -73,10 +83,6 @@ impl Client {
 	// }
 
 	// pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
-
-	// }
-
-	// pub fn put_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
 
 	// }
 

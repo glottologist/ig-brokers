@@ -1,15 +1,15 @@
 // use std::fmt;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountRes {
-	pub accounts: Vec<AccountData>
+pub struct Accounts {
+	pub accounts: Vec<Account>
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountData {
+pub struct Account {
 	pub account_alias: Option<String>,
 	pub account_id: String,
 	pub account_name: String,
@@ -47,9 +47,11 @@ pub enum AccountStatus {
 	SuspendedFromDealing
 }
 
-// pub struct Preferences {
-// 	pub trailing_stops_enabled: bool
-// }
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Preferences {
+	pub trailing_stops_enabled: bool
+}
 
 // pub struct AccountHistory {
 // 	pub activities: Vec<AccountActivity>,

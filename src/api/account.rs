@@ -1,5 +1,5 @@
 use crate::api::{Client, Config, IG};
-use crate::models::{AccountRes};
+use crate::models::{Accounts, Preferences, OkResponse};
 use chrono::NaiveDate;
 use std::collections::HashMap;
 
@@ -10,25 +10,27 @@ pub struct Account {
 impl Account {
 	/// GET /accounts
 	/// Returns a list of accounts belonging to the logged-in client.
-	pub fn get_accounts(&self) -> Result<AccountRes, reqwest::Error> {
+	pub fn get_accounts(&self) -> Result<Accounts, reqwest::Error> {
 		let endpoint: String = "/accounts".into();
-		let data = self.client.get_signed::<AccountRes>(&endpoint)?;
+		let data: Accounts = self.client.get_signed(&endpoint)?;
 		Ok(data)
 	}
 
-	// /// GET /accounts/preferences
-	// /// Returns account preferences.
-	// pub fn get_preferences(&self) -> Preferences {
-	// 	let endpoint = String::from("/accounts/preferences");
-	// 	self.client.get_signed(&endpoint)
-	// }
+	/// GET /accounts/preferences
+	/// Returns account preferences.
+	pub fn get_preferences(&self) -> Result<Preferences, reqwest::Error> {
+		let endpoint: String = "/accounts/preferences".into();
+		let data: Preferences = self.client.get_signed(&endpoint)?;
+		Ok(data)
+	}
 
-	// /// PUT /accounts/preferences
-	// /// Updates account preferences.
-	// pub fn update_preferences(&self, preferences: &Preferences) -> ResponseStatus {
-	// 	let endpoint = String::from("/accounts/preferences");
-	// 	self.client.put_signed(&endpoint, &Some(preferences))
-	// }
+	/// PUT /accounts/preferences
+	/// Updates account preferences.
+	pub fn update_preferences(&self, preferences: &Preferences) -> Result<OkResponse, reqwest::Error> {
+		let endpoint: String = "/accounts/preferences".into();
+		let data: OkResponse = self.client.put_signed(&endpoint, &Some(preferences))?;
+		Ok(data)
+	}
 
 	// /// GET /history/activity
 	// /// Returns the account activity history.

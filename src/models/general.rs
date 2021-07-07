@@ -1,6 +1,16 @@
-// pub enum ResponseStatus {
-// 	Success
-// }
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OkResponse {
+	pub status: ResponseStatus
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ResponseStatus {
+	Success
+}
 
 // pub struct Application {
 // 	pub allow_equities: bool,
