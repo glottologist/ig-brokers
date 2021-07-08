@@ -1,5 +1,11 @@
 use crate::api::{Client, Config, IG};
-use crate::models::{Accounts, Preferences, OkResponse};
+use crate::models::{
+	AccountHistory,
+	AccountHistoryQuery,
+	Accounts,
+	Preferences,
+	OkResponse
+};
 use chrono::NaiveDate;
 use std::collections::HashMap;
 
@@ -12,7 +18,7 @@ impl Account {
 	/// Returns a list of accounts belonging to the logged-in client.
 	pub fn get_accounts(&self) -> Result<Accounts, reqwest::Error> {
 		let endpoint: String = "/accounts".into();
-		let data: Accounts = self.client.get_signed(&endpoint)?;
+		let data: Accounts = self.client.get_signed(&endpoint, 1, None::<()>)?;
 		Ok(data)
 	}
 
@@ -20,7 +26,7 @@ impl Account {
 	/// Returns account preferences.
 	pub fn get_preferences(&self) -> Result<Preferences, reqwest::Error> {
 		let endpoint: String = "/accounts/preferences".into();
-		let data: Preferences = self.client.get_signed(&endpoint)?;
+		let data: Preferences = self.client.get_signed(&endpoint, 1, None::<()>)?;
 		Ok(data)
 	}
 
@@ -28,30 +34,17 @@ impl Account {
 	/// Updates account preferences.
 	pub fn update_preferences(&self, preferences: &Preferences) -> Result<OkResponse, reqwest::Error> {
 		let endpoint: String = "/accounts/preferences".into();
-		let data: OkResponse = self.client.put_signed(&endpoint, &Some(preferences))?;
+		let data: OkResponse = self.client.put_signed(&endpoint, 1, Some(preferences))?;
 		Ok(data)
 	}
 
-	// /// GET /history/activity
-	// /// Returns the account activity history.
-	// pub fn get_account_history(&self) -> AccountHistory {
-	// 	let endpoint = String::from("/history/activity");
-	// 	self.client.get_signed(&endpoint)
-	// }
-
-	// /// GET /history/activity/{fromDate}/{toDate}
-	// /// Returns the account activity history for the given date range.
-	// pub fn get_account_history_with_dates(&self, from: &NaiveDate, to: &NaiveDate) -> AccountHistory2 {
-	// 	let endpoint = format!("/history/activity/{}/{}", from, to);
-	// 	self.client.get_signed(&endpoint)
-	// }
-
-	// /// GET /history/activity/{lastPeriod}
-	// /// Returns the account activity history for the last specified period.
-	// pub fn get_account_history_with_period(&self, period: &String) -> AccountHistory2 {
-	// 	let endpoint = format!("/history/activity/{}", period);
-	// 	self.client.get_signed(&endpoint)
-	// }
+	/// GET /history/activity
+	/// Returns the account activity history.
+	pub fn get_account_history(&self, query: &AccountHistoryQuery) -> Result<AccountHistory, reqwest::Error> {
+		let endpoint = String::from("/history/activity");
+		let data: AccountHistory = self.client.get_signed(&endpoint, 3, Some(query))?;
+		Ok(data)
+	}
 
 	// /// GET /history/transactions
 	// /// Returns the transaction history.

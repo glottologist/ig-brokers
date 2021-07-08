@@ -31,19 +31,24 @@ impl Client {
 		}
 	}
 
-	pub fn get_signed<T: DeserializeOwned>(&self, endpoint: &String) -> Result<T, Error> {
+	pub fn get_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, version: u8, query: Option<U>) -> Result<T, Error> {
 		let url = get_url(&self.config, endpoint);
-		let req = self.set_headers(self.client.get(url))?;
+		let mut req = self.set_headers(self.client.get(url), version)?;
+
+		if let Some(query) = query {
+			req = req.query(&query);
+		}
+
 		let res = req.send()?;
 		Ok(res.json::<T>()?)
 	}
 
-	pub fn put_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, data: &Option<U>) -> Result<T, Error> {
+	pub fn put_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, version: u8, data: Option<U>) -> Result<T, Error> {
 		let url = get_url(&self.config, endpoint);
-		let mut req = self.set_headers(self.client.put(url))?;
+		let mut req = self.set_headers(self.client.put(url), version)?;
 
-		if let Some(body) = data {
-			req = req.json(&body);
+		if let Some(data) = data {
+			req = req.json(&data);
 		}
 
 		let res = req.send()?;
@@ -66,7 +71,7 @@ impl Client {
 		res.json::<LoginRes>()
 	}
 
-	fn set_headers(&self, req: RequestBuilder) -> Result<RequestBuilder, Error> {
+	fn set_headers(&self, req: RequestBuilder, version: u8) -> Result<RequestBuilder, Error> {
 		let token = self.get_token()?;
 		let authorization = format!("Bearer {}", token.oauth_token.access_token);
 
@@ -74,13 +79,9 @@ impl Client {
 		headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
 		headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
 		headers.insert("Authorization", authorization.parse().unwrap());
-		headers.insert("VERSION", "1".parse().unwrap());
+		headers.insert("VERSION", version.to_string().parse().unwrap());
 		Ok(req.headers(headers))
 	}
-
-	// pub fn get_with_params_signed<T>(&self, endpoint: &String, params: &HashMap<String, String>) -> T {
-	// 	let res = reqwest::post
-	// }
 
 	// pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
 

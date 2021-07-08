@@ -5,6 +5,7 @@ pub mod models;
 mod tests {
     use crate::api::{Account, IG, Config};
     use crate::models::*;
+    use chrono::Utc;
     use dotenv::dotenv;
     use std::env;
 
@@ -41,6 +42,24 @@ mod tests {
         let account: Account = get_api();
         let pref = Preferences { trailing_stops_enabled: true };
         let res = account.update_preferences(&pref);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_account_history_1() {
+        let account: Account = get_api();
+        let mut params = AccountHistoryQuery::default();
+        params.from = Utc::now().naive_local().into();
+        let res = account.get_account_history(&params);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_account_history_2() {
+        let account: Account = get_api();
+        let mut params = AccountHistoryQuery::default();
+        params.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
+        let res = account.get_account_history(&params);
         assert_eq!(res.is_ok(), true);
     }
 }

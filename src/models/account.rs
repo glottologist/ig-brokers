@@ -1,4 +1,5 @@
 // use std::fmt;
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
@@ -53,126 +54,139 @@ pub struct Preferences {
 	pub trailing_stops_enabled: bool
 }
 
-// pub struct AccountHistory {
-// 	pub activities: Vec<AccountActivity>,
-// 	pub metadata: Metadata
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountHistoryQuery {
+	pub from: Option<NaiveDateTime>,
+	pub to: Option<NaiveDateTime>,
+	pub detailed: Option<bool>,
+	pub deal_id: Option<String>,
+	pub filter: Option<String>,
+	pub page_size: Option<u32>
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountHistory {
+	pub activities: Vec<HistoryActivity>,
+	pub metadata: HistoryMetadata
+}
 
 // pub struct AccountHistory2 {
 // 	pub activities: Vec<AccountActivity2>
 // }
 
-// pub struct AccountActivity {
-// 	pub channel: Channel,
-// 	pub date: String,
-// 	pub deal_id: String,
-// 	pub description: String,
-// 	pub details: ActivityDetails,
-// 	pub epic: String,
-// 	pub period: String,
-// 	pub status: ActivityStatus,
-// 	pub r#type: ActivityType
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoryActivity {
+	pub channel: Channel,
+	pub date: String,
+	pub deal_id: String,
+	pub description: String,
+	pub details: Option<ActivityDetails>,
+	pub epic: String,
+	pub period: String,
+	pub status: ActivityStatus,
+	pub r#type: ActivityType
+}
 
-// pub struct AccountActivity2 {
-// 	pub action_status: String,
-// 	pub activity: String,
-// 	pub activity_history_id: String,
-// 	pub channel: String,
-// 	pub currency: String,
-// 	pub date: String,
-// 	pub deal_id: String,
-// 	pub epic: String,
-// 	pub level: String,
-// 	pub limit: String,
-// 	pub market_name: String,
-// 	pub period: String,
-// 	pub result: String,
-// 	pub size: String,
-// 	pub stop: String,
-// 	pub stop_type: String,
-// 	pub time: String
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum Channel {
+	Dealer,
+	Mobile,
+	PublicFixApi,
+	PublicWebApi,
+	System,
+	Web
+}
 
-// pub enum Channel {
-// 	Dealer,
-// 	Mobile,
-// 	PublicFixApi,
-// 	PublicWebApi,
-// 	System,
-// 	Web
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActivityDetails {
+	pub actions: Vec<ActivityAction>,
+	pub currency: String,
+	pub deal_reference: String,
+	pub direction: Direction,
+	pub good_till_date: String,
+	pub guaranteed_stop: bool,
+	pub level: f64,
+	pub limit_distance: f64,
+	pub limit_level: f64,
+	pub market_name: String,
+	pub size: f64,
+	pub stop_distance: f64,
+	pub stop_level: f64,
+	pub trailing_step: f64,
+	pub trailing_stop_distance: f64
+}
 
-// pub struct ActivityDetails {
-// 	pub actions: Vec<ActivityAction>,
-// 	pub currency: String,
-// 	pub deal_reference: String,
-// 	pub direction: Direction,
-// 	pub good_till_date: String,
-// 	pub guaranteed_stop: bool,
-// 	pub level: f64,
-// 	pub limit_distance: f64,
-// 	pub limit_level: f64,
-// 	pub market_name: String,
-// 	pub size: f64,
-// 	pub stop_distance: f64,
-// 	pub stop_level: f64,
-// 	pub trailing_step: f64,
-// 	pub trailing_stop_distance: f64
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActivityAction {
+	pub action_type: ActivityActionType,
+	pub affected_deal_id: String
+}
 
-// pub struct ActivityAction {
-// 	pub action_type: ActivityActionType,
-// 	pub affected_deal_id: String
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ActivityActionType {
+	LimitOrderAmended,
+	LimitOrderDeleted,
+	LimitOrderFilled,
+	LimitOrderOpened,
+	LimitOrderRolled,
+	PositionClosed,
+	PositionDeleted,
+	PositionOpened,
+	PositionPartiallyClosed,
+	PositionRolled,
+	StopLimitAmended,
+	StopOrderAmended,
+	StopOrderDeleted,
+	StopOrderFilled,
+	StopOrderOpened,
+	StopOrderRolled,
+	Unknown,
+	WorkingOrderDeleted
+}
 
-// pub enum ActivityActionType {
-// 	LimitOrderAmended,
-// 	LimitOrderDeleted,
-// 	LimitOrderFilled,
-// 	LimitOrderOpened,
-// 	LimitOrderRolled,
-// 	PositionClosed,
-// 	PositionDeleted,
-// 	PositionOpened,
-// 	PositionPartiallyClosed,
-// 	PositionRolled,
-// 	StopLimitAmended,
-// 	StopOrderAmended,
-// 	StopOrderDeleted,
-// 	StopOrderFilled,
-// 	StopOrderOpened,
-// 	StopOrderRolled,
-// 	Unknown,
-// 	WorkingOrderDeleted
-// }
-
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Direction {
 	Buy,
 	Sell
 }
 
-// pub enum ActivityStatus {
-// 	Accepted,
-// 	Rejected,
-// 	Unknown
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ActivityStatus {
+	Accepted,
+	Rejected,
+	Unknown
+}
 
-// pub enum ActivityType {
-// 	EditStopAndLimit,
-// 	Position,
-// 	System,
-// 	WorkingOrder
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ActivityType {
+	EditStopAndLimit,
+	Position,
+	System,
+	WorkingOrder
+}
 
-// pub struct Metadata {
-// 	pub pading: Paging
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoryMetadata {
+	pub paging: HistoryPaging
+}
 
-// pub struct Paging {
-// 	pub next: String,
-// 	pub size: u32
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoryPaging {
+	pub next: Option<String>,
+	pub size: u32
+}
 
 // pub struct TransactionHistoryParams {
 // 	pub r#type: TransactionType,
