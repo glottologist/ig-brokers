@@ -46,20 +46,38 @@ mod tests {
     }
 
     #[test]
-    fn get_account_history_1() {
+    fn get_activity_history_1() {
         let account: Account = get_api();
-        let mut params = AccountHistoryQuery::default();
+        let mut params = ActivityHistoryQuery::default();
         params.from = Utc::now().naive_local().into();
-        let res = account.get_account_history(&params);
+        let res = account.get_activity_history(&params);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
-    fn get_account_history_2() {
+    fn get_activity_history_2() {
         let account: Account = get_api();
-        let mut params = AccountHistoryQuery::default();
-        params.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
-        let res = account.get_account_history(&params);
+        let mut query = ActivityHistoryQuery::default();
+        query.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
+        let res = account.get_activity_history(&query);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_transaction_history_1() {
+        let account: Account = get_api();
+        let mut query = TransactionHistoryQuery::default();
+        query.from = Utc::now().naive_local().into();
+        let res = account.get_transaction_history(&query);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_transaction_history_2() {
+        let account: Account = get_api();
+        let mut query = TransactionHistoryQuery::default();
+        query.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
+        let res = account.get_transaction_history(&query);
         assert_eq!(res.is_ok(), true);
     }
 }

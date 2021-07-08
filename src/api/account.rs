@@ -1,13 +1,13 @@
 use crate::api::{Client, Config, IG};
 use crate::models::{
-	AccountHistory,
-	AccountHistoryQuery,
+	ActivityHistory,
+	ActivityHistoryQuery,
 	Accounts,
 	Preferences,
-	OkResponse
+	OkResponse,
+	TransactionHistory,
+	TransactionHistoryQuery
 };
-use chrono::NaiveDate;
-use std::collections::HashMap;
 
 pub struct Account {
 	client: Client
@@ -40,41 +40,20 @@ impl Account {
 
 	/// GET /history/activity
 	/// Returns the account activity history.
-	pub fn get_account_history(&self, query: &AccountHistoryQuery) -> Result<AccountHistory, reqwest::Error> {
-		let endpoint = String::from("/history/activity");
-		let data: AccountHistory = self.client.get_signed(&endpoint, 3, Some(query))?;
+	pub fn get_activity_history(&self, query: &ActivityHistoryQuery) -> Result<ActivityHistory, reqwest::Error> {
+		let endpoint: String = "/history/activity".into();
+		let data: ActivityHistory = self.client.get_signed(&endpoint, 3, Some(query))?;
 		Ok(data)
 	}
 
-	// /// GET /history/transactions
-	// /// Returns the transaction history.
-	// /// By default returns the minute prices within the last 10 minutes.
-	// pub fn get_transaction_history(&self, req: &TransactionHistoryParams) -> TransactionHistory {
-	// 	let params: HashMap<String, String> = HashMap::new();
-	// 	params.insert(String::from("type"), req.r#type.to_string());
-	// 	params.insert(String::from("from"), req.from);
-	// 	params.insert(String::from("to"), req.to);
-	// 	params.insert(String::from("maxSpanSeconds"), req.max_span_seconds.to_string());
-	// 	params.insert(String::from("pageSize"), req.page_size.to_string());
-	// 	params.insert(String::from("page_number"), req.page_number.to_string());
-
-	// 	let endpoint = String::from("/history/transactions");
-	// 	self.client.get_with_params_signed(&endpoint, &params)
-	// }
-
-	// /// GET /history/transactions/{transactionType}/{fromDate}/{toDate}
-	// /// Returns the transaction history for the specified transaction type and given date range.
-	// pub fn get_transaction_history_with_dates(&self, ttype: &String, from: &NaiveDate, to: &NaiveDate) -> TransactionHistory2 {
-	// 	let endpoint = format!("/history/transactions/{}/{}/{}", ttype, from.to_string(), to.to_string());
-	// 	self.client.get_signed(&endpoint)
-	// }
-
-	// /// GET /history/transactions/{transactionType}/{lastPeriod}
-	// /// Returns the transaction history for the specified transaction type and period.
-	// pub fn get_transaction_history_with_period(&self, ttype: &String, period: &String) -> TransactionHistory2 {
-	// 	let endpoint = format!("/history/transactions/{}/{}", ttype, period);
-	// 	self.client.get_signed(&endpoint)
-	// }
+	/// GET /history/transactions
+	/// Returns the transaction history.
+	/// By default returns the minute prices within the last 10 minutes.
+	pub fn get_transaction_history(&self, query: &TransactionHistoryQuery) -> Result<TransactionHistory, reqwest::Error> {
+		let endpoint: String = "/history/transactions".into();
+		let data: TransactionHistory = self.client.get_signed(&endpoint, 2, Some(query))?;
+		Ok(data)
+	}
 }
 
 impl IG for Account {

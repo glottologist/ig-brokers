@@ -1,4 +1,3 @@
-// use std::fmt;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -56,7 +55,7 @@ pub struct Preferences {
 
 #[derive(Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountHistoryQuery {
+pub struct ActivityHistoryQuery {
 	pub from: Option<NaiveDateTime>,
 	pub to: Option<NaiveDateTime>,
 	pub detailed: Option<bool>,
@@ -67,18 +66,14 @@ pub struct AccountHistoryQuery {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountHistory {
-	pub activities: Vec<HistoryActivity>,
-	pub metadata: HistoryMetadata
+pub struct ActivityHistory {
+	pub activities: Vec<Activity>,
+	pub metadata: ActivityMetadata
 }
-
-// pub struct AccountHistory2 {
-// 	pub activities: Vec<AccountActivity2>
-// }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct HistoryActivity {
+pub struct Activity {
 	pub channel: Channel,
 	pub date: String,
 	pub deal_id: String,
@@ -177,90 +172,73 @@ pub enum ActivityType {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct HistoryMetadata {
-	pub paging: HistoryPaging
+pub struct ActivityMetadata {
+	pub paging: ActivityPaging
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct HistoryPaging {
+pub struct ActivityPaging {
 	pub next: Option<String>,
 	pub size: u32
 }
 
-// pub struct TransactionHistoryParams {
-// 	pub r#type: TransactionType,
-// 	pub from: String,
-// 	pub to: String,
-// 	pub max_span_seconds: u64,
-// 	pub page_size: u32,
-// 	pub page_number: u32
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionHistoryQuery {
+	pub r#type: Option<TransactionType>,
+	pub from: Option<NaiveDateTime>,
+	pub to: Option<NaiveDateTime>,
+	pub max_span_seconds: Option<u64>,
+	pub page_size: Option<u32>,
+	pub page_number: Option<u32>
+}
 
-// pub enum TransactionType {
-// 	All,
-// 	AllDeal,
-// 	Deposit,
-// 	Withdrawal
-// }
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum TransactionType {
+	All,
+	AllDeal,
+	Deposit,
+	Withdrawal
+}
 
-// impl fmt::Display for TransactionType {
-// 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-// 		match self {
-// 			TransactionType::All => write!(f, "ALL"),
-// 			TransactionType::AllDeal => write!(f, "ALL_DEAL"),
-// 			TransactionType::Deposit => write!(f, "DEPOSIT"),
-// 			TransactionType::Withdrawal => write!(f, "WITHDRAWAL")
-// 		}
-// 	}
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionHistory {
+	pub metadata: TransactionMetadata,
+	pub transactions: Vec<Transaction>
+}
 
-// pub struct TransactionHistory {
-// 	pub metadata: TransactionHistoryMetadata,
-// 	pub transaction: Vec<Transaction>
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionMetadata {
+	pub page_data: TransactionPaging,
+	pub size: u32
+}
 
-// pub struct TransactionHistoryMetadata {
-// 	pub page_data: PagingMetadata,
-// 	pub size: u32
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionPaging {
+	pub page_number: u32,
+	pub page_size: u32,
+	pub total_pages: u32
+}
 
-// pub struct PagingMetadata {
-// 	pub page_number: u32,
-// 	pub page_size: u32,
-// 	pub total_pages: u32
-// }
-
-// pub struct Transaction {
-// 	pub cash_transaction: bool,
-// 	pub close_level: String,
-// 	pub currency: String,
-// 	pub date: String,
-// 	pub date_utc: String,
-// 	pub instrument_name: String,
-// 	pub open_date_utc: String,
-// 	pub open_level: String,
-// 	pub period: String,
-// 	pub profit_and_loss: String,
-// 	pub reference: String,
-// 	pub size: String,
-// 	pub transaction_type: String
-// }
-
-// pub struct TransactionHistory2 {
-// 	pub transactions: Vec<Transaction2>
-// }
-
-// pub struct Transaction2 {
-// 	cash_transaction: bool,
-// 	close_level: String,
-// 	currency: String,
-// 	date: String,
-// 	instrument_name: String,
-// 	open_level: String,
-// 	period: String,
-// 	profit_and_loss: String,
-// 	reference: String,
-// 	size: String,
-// 	transaction_type: String
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Transaction {
+	pub cash_transaction: bool,
+	pub close_level: String,
+	pub currency: String,
+	pub date: String,
+	pub date_utc: String,
+	pub instrument_name: String,
+	pub open_date_utc: String,
+	pub open_level: String,
+	pub period: String,
+	pub profit_and_loss: String,
+	pub reference: String,
+	pub size: String,
+	pub transaction_type: String
+}
