@@ -3,7 +3,7 @@ pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::api::{Account, IG, Config};
+    use crate::api::{Account, IG, Config, ClientSentiment};
     use crate::models::*;
     use chrono::Utc;
     use dotenv::dotenv;
@@ -78,6 +78,34 @@ mod tests {
         let mut query = TransactionHistoryQuery::default();
         query.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
         let res = account.get_transaction_history(&query);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_client_sentiments() {
+        let sentiment: ClientSentiment = get_api();
+        let mut query = SentimentQuery::default();
+        query.market_ids = Some(vec!["VOD-UK".to_string()]);
+        let res = sentiment.get_client_sentiments(&query);
+
+        if let Err(e) = res.as_ref() {
+            println!("{}", e);
+        }
+
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_client_sentiment() {
+        let sentiment: ClientSentiment = get_api();
+        let res = sentiment.get_client_sentiment(&"VOD-UK".into());
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_related_client_sentiment() {
+        let sentiment: ClientSentiment = get_api();
+        let res = sentiment.get_related_client_sentiment(&"VOD-UK".into());
         assert_eq!(res.is_ok(), true);
     }
 }

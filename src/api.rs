@@ -1,8 +1,8 @@
 mod account;
 pub use account::Account;
 
-// mod client_sentiment;
-// pub use client_sentiment::ClientSentiment;
+mod client_sentiment;
+pub use client_sentiment::ClientSentiment;
 
 mod client;
 pub use client::Client;

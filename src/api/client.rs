@@ -36,10 +36,16 @@ impl Client {
 		let mut req = self.set_headers(self.client.get(url), version)?;
 
 		if let Some(query) = query {
+			println!("before");
+			println!("{:?}", req);
 			req = req.query(&query);
+			println!("{:?}", req);
+			println!("after");
 		}
 
+		println!("{:?}", req);
 		let res = req.send()?;
+		println!("what");
 		Ok(res.json::<T>()?)
 	}
 
