@@ -9,8 +9,14 @@ impl ClientSentiment {
 	/// GET /clientsentiment
 	/// Returns the client sentiment for the given instrument's market.
 	pub fn get_client_sentiments(&self, query: &SentimentQuery) -> Result<Sentiments, reqwest::Error> {
-		let endpoint: String = "/clientsentiment".into();
-		let data: Sentiments = self.client.get_signed(&endpoint, 1, Some(query))?;
+		let mut params = String::new();
+		if let Some(market_ids) = &query.market_ids {
+			assert_ne!(market_ids.len(), 0);
+			params = format!("?marketIds={}", market_ids.join(","));
+		}
+		
+		let endpoint = format!("/clientsentiment{}", params);
+		let data: Sentiments = self.client.get_signed(&endpoint, 1, None::<()>)?;
 		Ok(data)
 	}
 
