@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize)]
 pub struct SentimentQuery {
 	pub market_ids: Option<Vec<String>>
 }

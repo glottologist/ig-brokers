@@ -62,21 +62,9 @@ impl IG {
 
 	/// GET /clientsentiment
 	/// Returns the client sentiment for the given instrument's market.
-	pub fn get_client_sentiments(&self, query: &SentimentQuery) -> Result<Sentiments, reqwest::Error> {
-		let mut args = Vec::new();
-		if let Some(market_ids) = &query.market_ids {
-			assert_ne!(market_ids.len(), 0);
-			let param = format!("marketIds={}", market_ids.join(","));
-			args.push(param);
-		}
-
-		let qs = String::new();
-		if args.len() > 0 {
-			qs = format!("?{}", args.join("&"));
-		}
-		
-		let endpoint = format!("/clientsentiment{}", qs);
-		let data: Sentiments = self.client.get_signed(&endpoint, 1, None::<()>)?;
+	pub fn get_client_sentiments(&self, query: &SentimentQuery) -> Result<Sentiments, reqwest::Error> {		
+		let endpoint = "/clientsentiment".to_string();
+		let data: Sentiments = self.client.get_signed(&endpoint, 1, Some(query))?;
 		Ok(data)
 	}
 
