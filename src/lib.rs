@@ -3,7 +3,7 @@ pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::api::{Account, IG, Config, ClientSentiment, Dealing};
+    use crate::api::{Account, IG, Config, ClientSentiment, Dealing, Market};
     use crate::models::*;
     use chrono::Utc;
     use dotenv::dotenv;
@@ -116,7 +116,7 @@ mod tests {
         // Create position
         let mut position = CreatePosition::default();
         position.direction = Direction::Buy.into();
-        position.epic = "".to_string().into();
+        position.epic = "CS.D.BITCOIN.CFD.IP".to_string().into();
         position.expiry = "-".to_string().into();
         position.force_open = false.into();
         position.guaranteed_stop = false.into();
@@ -126,5 +126,24 @@ mod tests {
         // Get deal confirmation
 
         // Close deal to clean up
+    }
+
+    #[test]
+    fn get_market_categories() {
+        let market: Market = get_api();
+        let res = market.get_market_categories();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_market_category() {
+        let market: Market = get_api();
+        let res = market.get_market_categories().expect("market call failed");
+        let nodes = res.nodes.expect("nodes was null");
+        let crypto = nodes.iter().find(|n| n.name == "Cryptocurrency".to_string());
+        let crypto = crypto.expect("crypto not found");
+
+        let res = market.get_market_category(&crypto.id);
+        assert_eq!(res.is_ok(), true);
     }
 }

@@ -22,8 +22,8 @@ pub use ig::IG;
 // mod login;
 // pub use login::Login;
 
-// mod markets;
-// pub use markets::Markets;
+mod market;
+pub use market::Market;
 
 // mod watchlists;
 // pub use watchlists::Watchlists;

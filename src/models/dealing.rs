@@ -156,41 +156,45 @@ pub enum PositionStatus {
 // 	pub update_time_utc: String
 // }
 
-// pub enum InstrumentType {
-// 	Binary,
-// 	BungeeCapped,
-// 	BungeeCommodities,
-// 	BungeeCurrencies,
-// 	BungeeIndices,
-// 	Commodities,
-// 	Currencies,
-// 	Indices,
-// 	KnockoutsCommodities,
-// 	KnockoutsCurrencies,
-// 	KnockoutsIndices,
-// 	KnockoutsShares,
-// 	OptCommodities,
-// 	OptCurrencies,
-// 	OptIndices,
-// 	OptRates,
-// 	OptShares,
-// 	Rates,
-// 	Sectors,
-// 	Shares,
-// 	SprintMarket,
-// 	TestMarket,
-// 	Unknown
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum InstrumentType {
+	Binary,
+	BungeeCapped,
+	BungeeCommodities,
+	BungeeCurrencies,
+	BungeeIndices,
+	Commodities,
+	Currencies,
+	Indices,
+	KnockoutsCommodities,
+	KnockoutsCurrencies,
+	KnockoutsIndices,
+	KnockoutsShares,
+	OptCommodities,
+	OptCurrencies,
+	OptIndices,
+	OptRates,
+	OptShares,
+	Rates,
+	Sectors,
+	Shares,
+	SprintMarket,
+	TestMarket,
+	Unknown
+}
 
-// pub enum MarketStatus {
-// 	Closed,
-// 	EditsOnly,
-// 	Offline,
-// 	OnAuction,
-// 	OnAuctionNoEdits,
-// 	Suspended,
-// 	Tradeable
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum MarketStatus {
+	Closed,
+	EditsOnly,
+	Offline,
+	OnAuction,
+	OnAuctionNoEdits,
+	Suspended,
+	Tradeable
+}
 
 // pub struct PositionData {
 // 	pub contract_size: f64,
