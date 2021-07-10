@@ -3,7 +3,7 @@ pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::api::{Account, IG, Config, ClientSentiment};
+    use crate::api::{Account, IG, Config, ClientSentiment, Dealing};
     use crate::models::*;
     use chrono::Utc;
     use dotenv::dotenv;
@@ -107,5 +107,24 @@ mod tests {
         let sentiment: ClientSentiment = get_api();
         let res = sentiment.get_related_client_sentiment(&"VOD-UK".into());
         assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_deal_confirmation() {
+        let dealing: Dealing = get_api();
+
+        // Create position
+        let mut position = CreatePosition::default();
+        position.direction = Direction::Buy.into();
+        position.epic = "".to_string().into();
+        position.expiry = "-".to_string().into();
+        position.force_open = false.into();
+        position.guaranteed_stop = false.into();
+        position.order_type = OrderType::Market.into();
+        position.size = 1.0.into();
+
+        // Get deal confirmation
+
+        // Close deal to clean up
     }
 }

@@ -1,30 +1,31 @@
-// use crate::api::{Client, Config, IG};
-// use crate::models::{
-// 	ClosePosition,
-// 	CreatePosition,
+use crate::api::{Client, Config, IG};
+use crate::models::{
+	ClosePosition,
+	CreatePosition,
 // 	CreateSprintMarketPosition,
 // 	CreateWorkingOrder,
-// 	DealConfirmation,
-// 	DealRef,
+	DealConfirmation,
+	DealRef,
 // 	Position,
 // 	Positions,
 // 	SprintMarketPositions,
 // 	UpdatePosition,
 // 	UpdateWorkingOrder,
 // 	WorkingOrders
-// };
+};
 
-// pub struct Dealing {
-// 	client: Client
-// }
+pub struct Dealing {
+	client: Client
+}
 
-// impl Dealing {
-// 	/// GET /confirms/{dealReference}
-// 	/// Returns a deal confirmation for the given deal reference.
-// 	pub fn get_deal_confirmation(&self, deal_reference: &String) -> DealConfirmation {
-// 		let endpoint = format!("/confirms/{}", deal_reference);
-// 		self.client.get_signed(&endpoint)
-// 	}
+impl Dealing {
+	/// GET /confirms/{dealReference}
+	/// Returns a deal confirmation for the given deal reference.
+	pub fn get_deal_confirmation(&self, deal_reference: &String) -> Result<DealConfirmation, reqwest::Error> {
+		let endpoint = format!("/confirms/{}", deal_reference);
+		let data: DealConfirmation = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
 // 	/// GET /positions
 // 	/// Returns all open positions for the active account.
@@ -40,19 +41,21 @@
 // 		self.client.get_signed(&endpoint)
 // 	}
 
-// 	/// DELETE /positions/otc
-// 	/// Closes one or more OTC positions.
-// 	pub fn close_position(&self, req: &ClosePosition) -> DealRef {
-// 		let endpoint = String::from("/positions/otc");
-// 		self.client.delete_signed(&endpoint, &Some(req))
-// 	}
+	/// DELETE /positions/otc
+	/// Closes one or more OTC positions.
+	pub fn close_position(&self, req: &ClosePosition) -> Result<DealRef, reqwest::Error> {
+		let endpoint: String = "/positions/otc".into();
+		let data: DealRef = self.client.delete_signed(&endpoint, 1, Some(req))?;
+		Ok(data)
+	}
 
-// 	/// POST /positions/otc
-// 	/// Creates an OTC position.
-// 	pub fn create_position(&self, req: &CreatePosition) -> DealRef {
-// 		let endpoint = String::from("/positions/otc");
-// 		self.client.post_signed(&endpoint, req)
-// 	}
+	/// POST /positions/otc
+	/// Creates an OTC position.
+	pub fn create_position(&self, req: &CreatePosition) -> Result<DealRef, reqwest::Error> {
+		let endpoint: String = "/positions/otc".into();
+		let data: DealRef = self.client.post_signed(&endpoint, 2, Some(req))?;
+		Ok(data)
+	}
 
 // 	/// PUT /positions/otc/{dealId}
 // 	/// Updates an OTC position.
@@ -102,15 +105,15 @@
 // 		let endpoint = format!("/workingorders/otc/{}", deal_id);
 // 		self.client.put_signed(&endpoint, &Some(req))
 // 	}
-// }
+}
 
-// impl IG for Dealing {
-// 	fn new(api_key: Option<String>, api_secret: Option<String>) -> Dealing {
-// 		Self::new_with_config(api_key, api_secret, Config::default())
-// 	}
+impl IG for Dealing {
+	fn new(account_id: String, api_key: String, username: String, password: String) -> Dealing {
+		Self::new_with_config(account_id, api_key, username, password, Config::default())
+	}
 
-// 	fn new_with_config(api_key: Option<String>, api_secret: Option<String>, config: Config) -> Dealing {
-// 		let client = Client::new(api_key, api_secret, config);
-// 		Dealing { client }
-// 	}
-// }
+	fn new_with_config(account_id: String, api_key: String, username: String, password: String, config: Config) -> Dealing {
+		let client = Client::new(account_id, api_key, username, password, config);
+		Dealing { client }
+	}
+}

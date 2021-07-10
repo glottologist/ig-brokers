@@ -36,22 +36,44 @@ impl Client {
 		let mut req = self.set_headers(self.client.get(url), version)?;
 
 		if let Some(query) = query {
-			println!("before");
-			println!("{:?}", req);
 			req = req.query(&query);
-			println!("{:?}", req);
-			println!("after");
 		}
 
-		println!("{:?}", req);
 		let res = req.send()?;
-		println!("what");
+		Ok(res.json::<T>()?)
+	}
+
+	pub fn post_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, version: u8, data: Option<U>) -> Result<T, Error> {
+		let url = get_url(&self.config, endpoint);
+		let mut req = self.set_headers(self.client.post(url), version)?;
+
+		if let Some(data) = data {
+			req = req.json(&data);
+		}
+
+		let res = req.send()?;
 		Ok(res.json::<T>()?)
 	}
 
 	pub fn put_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, version: u8, data: Option<U>) -> Result<T, Error> {
 		let url = get_url(&self.config, endpoint);
 		let mut req = self.set_headers(self.client.put(url), version)?;
+
+		if let Some(data) = data {
+			req = req.json(&data);
+		}
+
+		let res = req.send()?;
+		Ok(res.json::<T>()?)
+	}
+
+	pub fn delete_signed<T: DeserializeOwned, U: Serialize>(&self, endpoint: &String, version: u8, data: Option<U>) -> Result<T, Error> {
+		let url = get_url(&self.config, endpoint);
+		let mut req = self.set_headers(self.client.post(url), version)?;
+
+		let mut headers = HeaderMap::new();
+		headers.insert("_method", "DELETE".to_string().parse().unwrap());
+		req = req.headers(headers);
 
 		if let Some(data) = data {
 			req = req.json(&data);
@@ -88,12 +110,4 @@ impl Client {
 		headers.insert("VERSION", version.to_string().parse().unwrap());
 		Ok(req.headers(headers))
 	}
-
-	// pub fn post_signed<T, U>(&self, endpoint: &String, req: &T) -> U {
-
-	// }
-
-	// pub fn delete_signed<T, U>(&self, endpoint: &String, req: &Option<T>) -> U {
-
-	// }
 }

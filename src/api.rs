@@ -10,14 +10,14 @@ pub use client::Client;
 mod config;
 pub use config::Config;
 
-// mod dealing;
-// pub use dealing::Dealing;
+mod dealing;
+pub use dealing::Dealing;
 
 // mod general;
 // pub use general::General;
 
 mod ig;
-pub use self::ig::IG;
+pub use ig::IG;
 
 // mod login;
 // pub use login::Login;
