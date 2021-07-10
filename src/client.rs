@@ -1,4 +1,4 @@
-use crate::api::Config;
+use crate::config::Config;
 use crate::models::{LoginReq, LoginRes};
 use reqwest::Error;
 use reqwest::blocking::RequestBuilder;

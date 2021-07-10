@@ -1,9 +1,12 @@
-pub mod api;
+mod client;
+pub mod config;
+pub mod ig;
 pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::api::{Account, IG, Config, ClientSentiment, Dealing, Market};
+    use crate::config::Config;
+    use crate::ig::IG;
     use crate::models::*;
     use chrono::Utc;
     use dotenv::dotenv;
@@ -18,75 +21,75 @@ mod tests {
         (account_id, api_key, username, password)
     }
 
-    fn get_api<T : IG>() -> T {
+    fn get_api() -> IG {
         let (account_id, api_key, username, password) = setup();
         IG::new_with_config(account_id, api_key, username, password, Config::test())
     }
 
     #[test]
     fn get_accounts() {
-        let account: Account = get_api();
-        let res = account.get_accounts();
+        let api = get_api();
+        let res = api.get_accounts();
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_preferences() {
-        let account: Account = get_api();
-        let res = account.get_preferences();
+        let api = get_api();
+        let res = api.get_preferences();
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn update_preferences() {
-        let account: Account = get_api();
+        let api = get_api();
         let pref = Preferences { trailing_stops_enabled: true };
-        let res = account.update_preferences(&pref);
+        let res = api.update_preferences(&pref);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_activity_history_1() {
-        let account: Account = get_api();
+        let api = get_api();
         let mut params = ActivityHistoryQuery::default();
         params.from = Utc::now().naive_local().into();
-        let res = account.get_activity_history(&params);
+        let res = api.get_activity_history(&params);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_activity_history_2() {
-        let account: Account = get_api();
+        let api = get_api();
         let mut query = ActivityHistoryQuery::default();
         query.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
-        let res = account.get_activity_history(&query);
+        let res = api.get_activity_history(&query);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_transaction_history_1() {
-        let account: Account = get_api();
+        let api = get_api();
         let mut query = TransactionHistoryQuery::default();
         query.from = Utc::now().naive_local().into();
-        let res = account.get_transaction_history(&query);
+        let res = api.get_transaction_history(&query);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_transaction_history_2() {
-        let account: Account = get_api();
+        let api = get_api();
         let mut query = TransactionHistoryQuery::default();
         query.from = (Utc::now() - chrono::Duration::days(365)).naive_local().into();
-        let res = account.get_transaction_history(&query);
+        let res = api.get_transaction_history(&query);
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_client_sentiments() {
-        let sentiment: ClientSentiment = get_api();
+        let api = get_api();
         let mut query = SentimentQuery::default();
         query.market_ids = Some(vec!["VOD-UK".to_string()]);
-        let res = sentiment.get_client_sentiments(&query);
+        let res = api.get_client_sentiments(&query);
 
         if let Err(e) = res.as_ref() {
             println!("{}", e);
@@ -97,21 +100,21 @@ mod tests {
 
     #[test]
     fn get_client_sentiment() {
-        let sentiment: ClientSentiment = get_api();
-        let res = sentiment.get_client_sentiment(&"VOD-UK".into());
+        let api = get_api();
+        let res = api.get_client_sentiment(&"VOD-UK".into());
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_related_client_sentiment() {
-        let sentiment: ClientSentiment = get_api();
-        let res = sentiment.get_related_client_sentiment(&"VOD-UK".into());
+        let api = get_api();
+        let res = api.get_related_client_sentiment(&"VOD-UK".into());
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_deal_confirmation() {
-        let dealing: Dealing = get_api();
+        let api = get_api();
 
         // Create position
         let mut position = CreatePosition::default();
@@ -130,20 +133,20 @@ mod tests {
 
     #[test]
     fn get_market_categories() {
-        let market: Market = get_api();
-        let res = market.get_market_categories();
+        let api = get_api();
+        let res = api.get_market_categories();
         assert_eq!(res.is_ok(), true);
     }
 
     #[test]
     fn get_market_category() {
-        let market: Market = get_api();
-        let res = market.get_market_categories().expect("market call failed");
+        let api = get_api();
+        let res = api.get_market_categories().expect("market call failed");
         let nodes = res.nodes.expect("nodes was null");
         let crypto = nodes.iter().find(|n| n.name == "Cryptocurrency".to_string());
         let crypto = crypto.expect("crypto not found");
 
-        let res = market.get_market_category(&crypto.id);
+        let res = api.get_market_category(&crypto.id);
         assert_eq!(res.is_ok(), true);
     }
 }
