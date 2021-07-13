@@ -132,11 +132,11 @@ pub struct InstrumentDetails {
     pub chart_code: String,
     pub contract_size: String,
     pub controlled_risk_allowed: bool,
-    pub country: String,
+    pub country: Option<String>,
     pub currencies: Vec<Currency>,
     pub epic: String,
     pub expiry: String,
-    pub expiry_details: Expiry,
+    pub expiry_details: Option<Expiry>,
     pub force_open_allowed: bool,
     pub limited_risk_premium: DealingRule,
     pub lot_size: f64,
@@ -146,13 +146,14 @@ pub struct InstrumentDetails {
     pub market_id: String,
     pub name: String,
     pub news_code: String,
-    pub ope_pip_means: String,
-    pub opening_hours: OpeningHours,
+    pub one_pip_means: String,
+    pub opening_hours: Option<OpeningHours>,
+    pub rollover_details: Option<Rollover>,
     pub slippage_factor: SlippageFactor,
     pub special_info: Vec<String>,
     pub sprint_markets_maximum_expiry_time: Option<f64>,
     pub sprint_markets_minimum_expiry_time: Option<f64>,
-    pub stop_limits_allowed: bool,
+    pub stops_limits_allowed: bool,
     pub streaming_prices_available: bool,
     pub r#type: InstrumentType,
     pub unit: InstrumentUnit,
@@ -181,7 +182,7 @@ pub struct Expiry {
 pub struct DepositBand {
     pub currency: String,
     pub margin: f64,
-    pub max: f64,
+    pub max: Option<f64>,
     pub min: f64,
 }
 
@@ -189,6 +190,13 @@ pub struct DepositBand {
 #[serde(rename_all = "camelCase")]
 pub struct OpeningHours {
     pub market_times: Vec<MarketTime>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Rollover {
+    pub last_rollover_time: String,
+    pub rollover_info: String
 }
 
 #[derive(Debug, Deserialize)]
@@ -217,7 +225,7 @@ pub enum InstrumentUnit {
 #[serde(rename_all = "camelCase")]
 pub struct MarketSnapshot {
     pub bid: f64,
-    pub binary_odds: f64,
+    pub binary_odds: Option<f64>,
     pub controlled_risk_extra_spread: f64,
     pub decimal_places_factor: f64,
     pub delay_time: f64,

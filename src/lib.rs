@@ -159,14 +159,6 @@ mod tests {
         let mut query = MarketsQuery::default();
         query.epics.push("CS.D.BITCOIN.CFD.IP".to_string());
         let res = api.get_markets(&query);
-
-        match res.as_ref() {
-            Err(e) => {
-                println!("{}", e);
-            }
-            _ => (),
-        }
-
         assert_eq!(res.is_ok(), true);
     }
 }
