@@ -161,4 +161,19 @@ mod tests {
         let res = api.get_markets(&query);
         assert_eq!(res.is_ok(), true);
     }
+
+    #[test]
+    fn search_markets() {
+        let api = get_api();
+        let res = api.search_markets(&"eth".into());
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_prices() {
+        let api = get_api();
+        let query = PricesQuery::default();
+        let res = api.get_prices(&"CS.D.BITCOIN.CFD.IP".to_string(), &query);    
+        assert_eq!(res.is_ok(), true);
+    }
 }

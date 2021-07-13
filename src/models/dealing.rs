@@ -136,25 +136,28 @@ pub enum PositionStatus {
 // 	pub position: PositionData
 // }
 
-// pub struct MarketData {
-// 	pub bid: f64,
-// 	pub delay_time: f64,
-// 	pub epic: String,
-// 	pub expiry: String,
-// 	pub high: f64,
-// 	pub instrument_name: String,
-// 	pub instrument_type: InstrumentType,
-// 	pub lot_size: f64,
-// 	pub low: f64,
-// 	pub market_status: MarketStatus,
-// 	pub net_change: f64,
-// 	pub offer: f64,
-// 	pub percentage_change: f64,
-// 	pub scaling_factor: f64,
-// 	pub streaming_prices_available: bool,
-// 	pub update_time: String,
-// 	pub update_time_utc: String
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MarketData {
+	pub bid: Option<f64>,
+	pub delay_time: f64,
+	pub epic: String,
+	pub expiry: String,
+	pub high: Option<f64>,
+	pub instrument_name: String,
+	pub instrument_type: InstrumentType,
+	pub lot_size: Option<f64>,
+	pub low: Option<f64>,
+	pub market_status: MarketStatus,
+	pub net_change: f64,
+	pub offer: Option<f64>,
+	pub percentage_change: f64,
+	pub scaling_factor: f64,
+	pub streaming_prices_available: bool,
+	pub update_time: String,
+	#[serde(rename = "updateTimeUTC")]
+	pub update_time_utc: String
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]

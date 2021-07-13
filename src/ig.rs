@@ -265,20 +265,27 @@ impl IG {
 	/// GET /markets/{epic}
 	/// Returns the details of the given market.
 	pub fn get_market(&self, epic: &String) -> Result<Market, reqwest::Error> {
-		let endpoint: String = format!("/markets/{}", epic);
+		let endpoint = format!("/markets/{}", epic);
 		let data: Market = self.client.get_signed(&endpoint, 3, None::<()>)?;
 		Ok(data)
 	}
 
-// 	/// GET /markets?searchTerm={searchTerm}
-// 	pub fn find_markets(&self, search_term: &String) {
-		
-// 	}
+	/// GET /markets?searchTerm={searchTerm}
+	/// Returns all markets matching the search term.
+	pub fn search_markets(&self, search_term: &String) -> Result<MarketSearch, reqwest::Error> {
+		let endpoint = format!("/markets?searchTerm={}", search_term);
+		let data: MarketSearch = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// GET /prices/{epic}
-// 	pub fn get_prices(&self, epic: &String) {
-
-// 	}
+	/// GET /prices/{epic}
+	/// Returns historical prices for a particular instrument.
+	/// By default returns the minute prices within the last 10 minutes.
+	pub fn get_prices(&self, epic: &String, query: &PricesQuery) -> Result<Prices, reqwest::Error> {
+		let endpoint = format!("/prices/{}", epic);
+		let data: Prices = self.client.get_signed(&endpoint, 3, Some(query))?;
+		Ok(data)
+	}
 
 // 	/// GET /watchlists
 // 	pub fn get_watchlists(&self) {

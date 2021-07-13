@@ -1,4 +1,5 @@
-use crate::models::{InstrumentType, MarketStatus};
+use crate::models::*;
+use chrono::NaiveDateTime;
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize, Serializer};
 
@@ -237,4 +238,94 @@ pub struct MarketSnapshot {
     pub percentage_change: f64,
     pub scaling_factor: f64,
     pub update_time: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MarketSearch {
+    pub markets: Vec<MarketData>
+}
+
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PricesQuery {
+    pub resolution: Option<Resolution>,
+    pub from: Option<NaiveDateTime>,
+    pub to: Option<NaiveDateTime>,
+    pub max: Option<u32>,
+    pub page_size: Option<u32>,
+    pub page_number: Option<u32>
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum Resolution {
+    Day,
+    Hour,
+    Hour2,
+    Hour3,
+    Hour4,
+    Minute,
+    Minute10,
+    Minute15,
+    Minute2,
+    Minute3,
+    Minute30,
+    Minute5,
+    Month,
+    Second,
+    Week
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Prices {
+    pub instrument_type: InstrumentType,
+    pub metadata: PriceMetadata,
+    pub prices: Vec<Price>
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PriceMetadata {
+    pub page_data: PricePaging,
+    pub size: f64,
+    pub allowance: PriceAllowance
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PricePaging {
+    pub page_number: u32,
+    pub page_size: u32,
+    pub total_pages: u32
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PriceAllowance {
+    pub allowance_expiry: u32,
+    pub remaining_allowance: u32,
+    pub total_allowance: u32
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Price {
+    pub close_price: AskBid,
+    pub high_price: AskBid,
+    pub last_traded_volume: f64,
+    pub low_price: AskBid,
+    pub open_price: AskBid,
+    pub snapshot_time: String,
+    #[serde(rename = "snapshotTimeUTC")]
+    pub snapshot_time_utc: String
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AskBid {
+    pub ask: f64,
+    pub bid: f64,
+    pub last_traded: Option<f64>
 }
