@@ -287,33 +287,51 @@ impl IG {
 		Ok(data)
 	}
 
-// 	/// GET /watchlists
-// 	pub fn get_watchlists(&self) {
+	/// GET /watchlists
+	/// Returns all watchlists belonging to the active account
+	pub fn get_watchlists(&self) -> Result<Watchlists, reqwest::Error> {
+		let endpoint = "/watchlists".to_string();
+		let data: Watchlists = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
-// 	}
+	/// POST /watchlists
+	/// Creates a watchlist.
+	pub fn create_watchlist(&self, req: &CreateWatchlist) -> Result<CreateWatchlistResult, reqwest::Error> {
+		let endpoint = "/watchlists".to_string();
+		let data: CreateWatchlistResult = self.client.post_signed(&endpoint, 1, Some(req))?;
+		Ok(data)
+	}
 
-// 	/// POST /watchlists
-// 	pub fn create_watchlist(&self) {
+	/// DELETE /watchlists/{watchlistId}
+	/// Deletes a watchlist.
+	pub fn delete_watchlist(&self, watchlist_id: &String) -> Result<OkResponse, reqwest::Error> {
+		let endpoint = format!("/watchlists/{}", watchlist_id);
+		let data: OkResponse = self.client.delete_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
-// 	}
+	/// GET /watchlists/{watchlistId}
+	/// Returns a watchlist.
+	pub fn get_watchlist(&self, watchlist_id: &String) -> Result<MarketSearch, reqwest::Error> {
+		let endpoint = format!("/watchlists/{}", watchlist_id);
+		let data: MarketSearch = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// DELETE /watchlists/{watchlistId}
-// 	pub fn delete_watchlist(&self, watchlist: &String) {
+	/// PUT /watchlists/{watchlistId}
+	/// Add a market to watchlist.
+	pub fn add_market_to_watchlist(&self, watchlist_id: &String, req: &AddToWatchlist) -> Result<OkResponse, reqwest::Error> {
+		let endpoint = format!("/watchlists/{}", watchlist_id);
+		let data: OkResponse = self.client.put_signed(&endpoint, 1, Some(req))?;
+		Ok(data)
+	}
 
-// 	}
-
-// 	/// GET /watchlists/{watchlistId}
-// 	pub fn get_watchlist(&self, watchlist: &String) {
-
-// 	}
-
-// 	/// PUT /watchlists/{watchlistId}
-// 	pub fn add_market_to_watchlist(&self, watchlist: &String) {
-
-// 	}
-
-// 	/// DELETE /watchlists/{watchlistId}/{epic}
-// 	pub fn remove_market_from_watchlist(&self, watchlist: &String, epic: &String) {
-
-// 	}
+	/// DELETE /watchlists/{watchlistId}/{epic}
+	/// Remove a market from a watchlist.
+	pub fn remove_market_from_watchlist(&self, watchlist_id: &String, epic: &String) -> Result<OkResponse, reqwest::Error> {
+		let endpoint = format!("/watchlists/{}/{}", watchlist_id, epic);
+		let data: OkResponse = self.client.delete_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 }

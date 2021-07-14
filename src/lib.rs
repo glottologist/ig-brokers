@@ -176,4 +176,74 @@ mod tests {
         let res = api.get_prices(&"CS.D.BITCOIN.CFD.IP".to_string(), &query);    
         assert_eq!(res.is_ok(), true);
     }
+
+    #[test]
+    fn get_watchlists() {
+        let api = get_api();
+        let res = api.get_watchlists();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn create_watchlist() {
+        let api = get_api();
+        let epics = vec!["CS.D.BITCOIN.CFD.IP".to_string()];
+        let name = "test".to_string();
+        let create = CreateWatchlist { epics, name };
+        let create_res = api.create_watchlist(&create);
+        assert_eq!(create_res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_watchlist() {
+        let api = get_api();
+
+        let res = api.get_watchlists().unwrap();
+        let watchlist = res.watchlists.iter()
+            .find(|w| w.name == "test")
+            .expect("no watchlist named test");
+
+        let wres = api.get_watchlist(&watchlist.id);
+        assert_eq!(wres.is_ok(), true);
+    }
+
+    #[test]
+    fn add_market_to_watchlist() {
+        let api = get_api();
+
+        let res = api.get_watchlists().unwrap();
+        let watchlist = res.watchlists.iter()
+            .find(|w| w.name == "test")
+            .expect("no watchlist named test");
+
+        let req = AddToWatchlist { epic: "CS.D.ETHUSD.CFD.IP".to_string() };
+        let res2 = api.add_market_to_watchlist(&watchlist.id, &req);
+        assert_eq!(res2.is_ok(), true);
+    }
+
+    #[test]
+    fn remove_market_from_watchlist() {
+        let api = get_api();
+
+        let res = api.get_watchlists().unwrap();
+        let watchlist = res.watchlists.iter()
+            .find(|w| w.name == "test")
+            .expect("no watchlist named test");
+
+        let res2 = api.remove_market_from_watchlist(&watchlist.id, &"CS.D.ETHUSD.CFD.IP".to_string());
+        assert_eq!(res2.is_ok(), true);
+    }
+
+    #[test]
+    fn delete_watchlist() {
+        let api = get_api();
+
+        let res = api.get_watchlists().unwrap();
+        let watchlist = res.watchlists.iter()
+            .find(|w| w.name == "test")
+            .expect("no watchlist named test");
+
+        let del_res = api.delete_watchlist(&watchlist.id);
+        assert_eq!(del_res.is_ok(), true);
+    }
 }

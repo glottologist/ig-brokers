@@ -15,3 +15,6 @@ pub use login::*;
 
 mod markets;
 pub use markets::*;
+
+mod watchlists;
+pub use watchlists::*;
