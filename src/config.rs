@@ -3,13 +3,13 @@ pub struct Config {
 }
 
 impl Config {
-	pub fn default() -> Config {
+	pub fn live() -> Config {
 		Config {
 			base_url: String::from("api.ig.com/gateway/deal")
 		}
 	}
 
-	pub fn test() -> Config {
+	pub fn demo() -> Config {
 		Config {
 			base_url: String::from("demo-api.ig.com/gateway/deal")
 		}

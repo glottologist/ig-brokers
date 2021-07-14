@@ -23,7 +23,7 @@ mod tests {
 
     fn get_api() -> IG {
         let (account_id, api_key, username, password) = setup();
-        IG::new_with_config(account_id, api_key, username, password, Config::test())
+        IG::new_with_config(account_id, api_key, username, password, Config::demo())
     }
 
     #[test]

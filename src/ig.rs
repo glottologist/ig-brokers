@@ -10,7 +10,7 @@ pub struct IG {
 impl IG {
 	/// Creates a new API instance defaulting to the production configuration.
 	pub fn new(account_id: String, api_key: String, username: String, password: String) -> IG {
-		IG::new_with_config(account_id, api_key, username, password, Config::default())
+		IG::new_with_config(account_id, api_key, username, password, Config::live())
 	}
 
 	/// Creates a new API instance with a config.
@@ -193,50 +193,13 @@ impl IG {
 // 		self.client.put_signed(&endpoint, &None::<()>)
 // 	}
 
-// 	/// DELETE /session
-// 	/// Log out of the current session.
-// 	pub fn logout(&self) {
-// 		let endpoint = String::from("/session");
-// 		self.client.delete_signed(&endpoint, &None::<()>)
-// 	}
-
-// 	/// GET /session
-// 	/// Returns the user's session details and optionally tokens.
-// 	pub fn get_session(&self, req: &GetSession) -> Session {
-// 		let params: HashMap<String, String> = HashMap::new();
-// 		params.insert(String::from("fetchSessionTokens"), req.fetch_session_tokens.to_string());
-
-// 		let endpoint = String::from("/session");
-// 		self.client.get_with_params_signed(&endpoint, &params)
-// 	}
-
-// 	/// POST /session
-// 	/// Creates a trading session, obtaining session tokens for subsequent API access.
-// 	/// Please note that region-specific login restrictions may apply.
-// 	pub fn login(&self, req: &LoginReq) -> LoginRes {
-// 		let endpoint = String::from("/session");
-// 		self.client.post_signed(&endpoint, &req)
-// 	}
-
-// 	/// PUT /session
-// 	/// Switches active accounts, optionally setting the default account.
-// 	pub fn switch_account(&self, req: &SwitchAccountReq) -> SwitchAccountRes {
-// 		let endpoint = String::from("/session");
-// 		self.client.put_signed(&endpoint, &Some(req))
-// 	}
-
-// 	/// GET /session/encryptionKey
-// 	/// Creates a trading session, obtaining session tokens for subsequent API access.
-// 	pub fn login_trading(&self) -> LoginTradingRes {
-// 		let endpoint = String::from("/session/encryptionKey");
-// 		self.client.get_signed(&endpoint)
-// 	}
-
-// 	/// POST /session/refresh-token
-// 	pub fn refresh_trading(&self, req: RefreshTokenReq) -> OauthToken {
-// 		let endpoint = String::from("/session/refresh-token");
-// 		self.client.post_signed(&endpoint, &req)
-// 	}
+	/// GET /session
+	/// Returns the user's session details and optionally tokens.
+	pub fn get_session(&self) -> Result<Session, reqwest::Error> {
+		let endpoint = "/session".to_string();
+		let data: Session = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
 	/// GET /marketnavigation
 	/// Returns all top-level nodes (market categories) in the market navigation hierarchy.
