@@ -171,27 +171,21 @@ impl IG {
 // 		self.client.put_signed(&endpoint, &Some(req))
 // 	}
 
-// 	/// GET /operations/application
-// 	/// Returns a list of client owned applications.
-// 	pub fn get_applications(&self) -> Application {
-// 		let endpoint = String::from("/operations/application");
-// 		self.client.get_signed(&endpoint)
-// 	}
+	/// GET /operations/application
+	/// Returns a list of client owned applications.
+	pub fn get_applications(&self) -> Result<Vec<Application>, reqwest::Error> {
+		let endpoint = "/operations/application".to_string();
+		let data: Vec<Application> = self.client.get_signed(&endpoint, 1, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// PUT /operations/application
-// 	/// Alters the details of a given user application.
-// 	pub fn update_application(&self, req: &UpdateApplication) -> Application {
-// 		let endpoint = String::from("/operations/application");
-// 		self.client.put_signed(&endpoint, &Some(req))
-// 	}
-
-// 	/// PUT /operations/application/disable
-// 	/// Disables the current application key from processing further requests.
-// 	/// Disabled keys may be reenabled via the My Account section on our web dealing platform.
-// 	pub fn disable_application(&self) -> Application {
-// 		let endpoint = String::from("/operations/application/disable");
-// 		self.client.put_signed(&endpoint, &None::<()>)
-// 	}
+	/// PUT /operations/application
+	/// Alters the details of a given user application.
+	pub fn update_application(&self, req: &UpdateApplication) -> Result<Application, reqwest::Error> {
+		let endpoint = "/operations/application".to_string();
+		let data: Application = self.client.put_signed(&endpoint, 1, Some(req))?;
+		Ok(data)
+	}
 
 	/// GET /session
 	/// Returns the user's session details and optionally tokens.

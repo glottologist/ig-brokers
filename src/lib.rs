@@ -133,6 +133,34 @@ mod tests {
     }
 
     #[test]
+    fn get_applications() {
+        let api = get_api();
+        let res = api.get_applications();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn update_application() {
+        let api = get_api();
+        let req = UpdateApplication {
+            allowance_account_overall: 10.0,
+            allowance_account_trading: 33.0,
+            api_key: env::var("IG_API_KEY").unwrap(),
+            status: ApplicationStatus::Disabled
+        };
+
+        let res = api.update_application(&req);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_session() {
+        let api = get_api();
+        let res = api.get_session();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
     fn get_market_categories() {
         let api = get_api();
         let res = api.get_market_categories();
