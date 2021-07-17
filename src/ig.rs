@@ -9,13 +9,18 @@ pub struct IG {
 }
 
 impl IG {
-	/// Creates a new API instance defaulting to the production configuration.
-	pub fn new(account_id: String, api_key: String, username: String, password: String) -> IG {
-		IG::new_with_config(account_id, api_key, username, password, Config::live())
+	/// Creates a new API instance with the production configuration.
+	pub fn live(account_id: String, api_key: String, username: String, password: String) -> IG {
+		IG::new(account_id, api_key, username, password, Config::live())
+	}
+
+	/// Creates a new API instnace with the demo configuration.
+	pub fn demo(account_id: String, api_key: String, username: String, password: String) -> IG {
+		IG::new(account_id, api_key, username, password, Config::demo())
 	}
 
 	/// Creates a new API instance with a config.
-	pub fn new_with_config(account_id: String, api_key: String, username: String, password: String, config: Config) -> IG {
+	pub fn new(account_id: String, api_key: String, username: String, password: String, config: Config) -> IG {
 		let client = Client::new(account_id, api_key, username, password, config);
 		IG { client }
 	}

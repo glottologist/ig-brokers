@@ -5,7 +5,6 @@ pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::config::Config;
     use crate::ig::IG;
     use crate::models::*;
     use chrono::Utc;
@@ -23,7 +22,7 @@ mod tests {
 
     fn get_api() -> IG {
         let (account_id, api_key, username, password) = setup();
-        IG::new_with_config(account_id, api_key, username, password, Config::demo())
+        IG::demo(account_id, api_key, username, password)
     }
 
     #[test]
