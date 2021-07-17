@@ -1,11 +1,11 @@
 mod client;
 pub mod config;
-pub mod ig;
+pub mod api;
 pub mod models;
 
 #[cfg(test)]
 mod tests {
-    use crate::ig::IG;
+    use crate::api::IG;
     use crate::models::*;
     use chrono::Utc;
     use dotenv::dotenv;
