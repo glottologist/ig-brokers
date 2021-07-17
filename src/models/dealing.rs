@@ -127,14 +127,18 @@ pub enum PositionStatus {
 	PartiallyClosed
 }
 
-// pub struct Positions {
-// 	pub positions: Vec<Position>
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Positions {
+	pub positions: Vec<Position>
+}
 
-// pub struct Position {
-// 	pub market: MarketData,
-// 	pub position: PositionData
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Position {
+	pub market: MarketData,
+	pub position: PositionData
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -142,6 +146,7 @@ pub struct MarketData {
 	pub bid: Option<f64>,
 	pub delay_time: f64,
 	pub epic: String,
+	pub exchange_id: Option<String>,
 	pub expiry: String,
 	pub high: Option<f64>,
 	pub instrument_name: String,
@@ -199,25 +204,27 @@ pub enum MarketStatus {
 	Tradeable
 }
 
-// pub struct PositionData {
-// 	pub contract_size: f64,
-// 	pub controlled_risk: bool,
-// 	pub created_date: String,
-// 	pub created_date_utc: String,
-// 	pub currency: String,
-// 	pub deal_id: String,
-// 	pub deal_reference: String,
-// 	pub direction: Direction,
-// 	pub level: f64,
-// 	pub limit_level: f64,
-// 	pub limited_risk_premium: f64,
-// 	pub size: f64,
-// 	pub stop_level: f64,
-// 	pub trailing_step: f64,
-// 	pub trailing_stop_distance: f64
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PositionData {
+	pub contract_size: f64,
+	pub controlled_risk: bool,
+	pub created_date: String,
+	pub created_date_utc: String,
+	pub currency: String,
+	pub deal_id: String,
+	pub deal_reference: String,
+	pub direction: Direction,
+	pub level: f64,
+	pub limit_level: f64,
+	pub limited_risk_premium: f64,
+	pub size: f64,
+	pub stop_level: f64,
+	pub trailing_step: f64,
+	pub trailing_stop_distance: f64
+}
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClosePosition {
 	pub deal_id: Option<String>,
@@ -275,137 +282,142 @@ pub struct CreatePosition {
 	pub trailing_stop_increment: Option<f64>
 }
 
-// pub struct UpdatePosition {
-// 	pub guaranteed_stop: Option<bool>,
-// 	pub limit_level: Option<f64>,
-// 	pub stop_level: Option<f64>,
-// 	pub trailing_stop: Option<bool>,
-// 	pub trailing_stop_distance: Option<f64>,
-// 	pub trailing_stop_increment: Option<f64>
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdatePosition {
+	pub guaranteed_stop: Option<bool>,
+	pub limit_level: Option<f64>,
+	pub stop_level: Option<f64>,
+	pub trailing_stop: Option<bool>,
+	pub trailing_stop_distance: Option<f64>,
+	pub trailing_stop_increment: Option<f64>
+}
 
-// pub struct SprintMarketPositions {
-// 	pub sprint_market_positions: Vec<SprintMarketPosition>
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SprintMarketPositions {
+	pub sprint_market_positions: Vec<SprintMarketPosition>
+}
 
-// pub struct SprintMarketPosition {
-// 	pub created_date: String,
-// 	pub currency: String,
-// 	pub deal_id: String,
-// 	pub description: String,
-// 	pub direction: Direction,
-// 	pub epic: String,
-// 	pub expiry_time: String,
-// 	pub instrument_name: String,
-// 	pub market_status: MarketStatus,
-// 	pub payout_amount: f64,
-// 	pub size: f64,
-// 	pub strike_level: f64
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SprintMarketPosition {
+	pub created_date: String,
+	pub currency: String,
+	pub deal_id: String,
+	pub description: String,
+	pub direction: Direction,
+	pub epic: String,
+	pub expiry_time: String,
+	pub instrument_name: String,
+	pub market_status: MarketStatus,
+	pub payout_amount: f64,
+	pub size: f64,
+	pub strike_level: f64
+}
 
-// pub struct CreateSprintMarketPosition {
-// 	pub deal_reference: String,
-// 	pub direction: Direction,
-// 	pub epic: String,
-// 	pub expiry_period: SprintMarketExpiryPeriod,
-// 	pub size: f64
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateSprintMarketPosition {
+	pub deal_reference: Option<String>,
+	pub direction: Option<Direction>,
+	pub epic: Option<String>,
+	pub expiry_period: Option<SprintMarketExpiryPeriod>,
+	pub size: Option<f64>
+}
 
-// pub enum SprintMarketExpiryPeriod {
-// 	FiveMinutes,
-// 	OneMinute,
-// 	SixtyMinutes,
-// 	TwentyMinutes,
-// 	TwoMinutes
-// }
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum SprintMarketExpiryPeriod {
+	FiveMinutes,
+	OneMinute,
+	SixtyMinutes,
+	TwentyMinutes,
+	TwoMinutes
+}
 
-// pub struct WorkingOrders {
-// 	pub working_orders: Vec<WorkingOrder>
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkingOrders {
+	pub working_orders: Vec<WorkingOrder>
+}
 
-// pub struct WorkingOrder {
-// 	market_data: MarketData2,
-// 	working_order_data: WorkingOrderData
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkingOrder {
+	market_data: MarketData,
+	working_order_data: WorkingOrderData
+}
 
-// pub struct MarketData2 {
-// 	pub bid: f64,
-// 	pub delay_time: f64,
-// 	pub epic: String,
-// 	pub exchange_id: String,
-// 	pub expiry: String,
-// 	pub high: f64,
-// 	pub instrument_name: String,
-// 	pub instrument_type: InstrumentType,
-// 	pub lot_size: f64,
-// 	pub low: f64,
-// 	pub market_status: MarketStatus,
-// 	pub net_change: f64,
-// 	pub offer: f64,
-// 	pub percentage_change: f64,
-// 	pub scaling_factor: f64,
-// 	pub streaming_prices_enabled: bool,
-// 	pub update_time: String,
-// 	pub update_time_utc: String
-// }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WorkingOrderData {
+	pub created_date: String,
+	#[serde(rename = "createdDateUTC")]
+	pub created_date_utc: String,
+	pub currency_code: String,
+	pub deal_id: String,
+	pub direction: Direction,
+	pub dma: bool,
+	pub epic: String,
+	pub good_till_date: String,
+	#[serde(rename = "goodTillDateISO")]
+	pub good_till_date_iso: String,
+	pub guaranteed_stop: bool,
+	pub limit_distance: f64,
+	pub limited_risk_premium: f64,
+	pub order_level: f64,
+	pub order_size: f64,
+	pub order_type: WorkingOrderType,
+	pub stop_distance: f64,
+	pub time_in_force: WorkingOrderTimeInForce
+}
 
-// pub struct WorkingOrderData {
-// 	pub created_date: String,
-// 	pub created_date_utc: String,
-// 	pub currency_code: String,
-// 	pub deal_id: String,
-// 	pub direction: Direction,
-// 	pub dma: bool,
-// 	pub epic: String,
-// 	pub good_till_date: String,
-// 	pub good_till_date_iso: String,
-// 	pub guaranteed_stop: bool,
-// 	pub limit_distance: f64,
-// 	pub limited_risk_premium: f64,
-// 	pub order_level: f64,
-// 	pub order_size: f64,
-// 	pub order_type: WorkingOrderType,
-// 	pub stop_distance: f64,
-// 	pub time_in_force: WorkingOrderTimeInForce
-// }
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum WorkingOrderType {
+	Limit,
+	Stop
+}
 
-// pub enum WorkingOrderType {
-// 	Limit,
-// 	Stop
-// }
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum WorkingOrderTimeInForce {
+	GoodTillCancelled,
+	GoodTillDate
+}
 
-// pub enum WorkingOrderTimeInForce {
-// 	GoodTillCancelled,
-// 	GoodTillDate
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateWorkingOrder {
+	pub currency_code: Option<String>,
+	pub deal_reference: Option<String>,
+	pub direction: Option<Direction>,
+	pub epic: Option<String>,
+	pub expiry: Option<String>,
+	pub force_open: Option<bool>,
+	pub good_till_date: Option<String>,
+	pub guaranteed_stop: Option<bool>,
+	pub level: Option<f64>,
+	pub limit_distance: Option<f64>,
+	pub limit_level: Option<f64>,
+	pub size: Option<f64>,
+	pub stop_distance: Option<f64>,
+	pub stop_level: Option<f64>,
+	pub time_in_force: Option<WorkingOrderTimeInForce>,
+	pub r#type: Option<WorkingOrderType>
+}
 
-// pub struct CreateWorkingOrder {
-// 	pub currency_code: Option<String>,
-// 	pub deal_reference: Option<String>,
-// 	pub direction: Option<Direction>,
-// 	pub epic: Option<String>,
-// 	pub expiry: Option<String>,
-// 	pub force_open: Option<bool>,
-// 	pub good_till_date: Option<String>,
-// 	pub guaranteed_stop: Option<bool>,
-// 	pub level: Option<f64>,
-// 	pub limit_distance: Option<f64>,
-// 	pub limit_level: Option<f64>,
-// 	pub size: Option<f64>,
-// 	pub stop_distance: Option<f64>,
-// 	pub stop_level: Option<f64>,
-// 	pub time_in_force: Option<WorkingOrderTimeInForce>,
-// 	pub r#type: Option<WorkingOrderType>
-// }
-
-// pub struct UpdateWorkingOrder {
-// 	pub good_till_date: Option<String>,
-// 	pub guaranteed_stop: Option<bool>,
-// 	pub level: Option<f64>,
-// 	pub limit_distance: Option<f64>,
-// 	pub limit_level: Option<f64>,
-// 	pub stop_distance: Option<f64>,
-// 	pub stop_level: Option<f64>,
-// 	pub time_in_force: Option<WorkingOrderTimeInForce>,
-// 	pub r#type: Option<WorkingOrderType>
-// }
+#[derive(Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateWorkingOrder {
+	pub good_till_date: Option<String>,
+	pub guaranteed_stop: Option<bool>,
+	pub level: Option<f64>,
+	pub limit_distance: Option<f64>,
+	pub limit_level: Option<f64>,
+	pub stop_distance: Option<f64>,
+	pub stop_level: Option<f64>,
+	pub time_in_force: Option<WorkingOrderTimeInForce>,
+	pub r#type: Option<WorkingOrderType>
+}

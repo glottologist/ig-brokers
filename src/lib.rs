@@ -117,8 +117,58 @@ mod tests {
     fn get_deal_confirmation() {
         let api = get_api();
 
-        // Create position
+        // Get positions
+        let positions = api.get_positions().expect("failed to get positions");
+        let first = positions.positions.first().expect("no positions found");
+
+        // Get deal confirmation
+        let res = api.get_deal_confirmation(&first.position.deal_reference);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_positions() {
+        let api = get_api();
+        let res = api.get_positions();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_position() {
+        let api = get_api();
+
+        // Get positions
+        let positions = api.get_positions().expect("failed to get positions");
+        let first = positions.positions.first().expect("no positions found");
+
+        // Get deal confirmation
+        let res = api.get_position(&first.position.deal_id);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn close_position() {
+        let api = get_api();
+
+        let positions = api.get_positions().expect("failed to get positions");
+        let first = positions.positions.first().expect("no positions found");
+
+        let mut position = ClosePosition::default();
+        position.deal_id = first.position.deal_id.clone().into();
+        position.direction = Direction::Sell.into();
+        position.order_type = OrderType::Market.into();
+        position.size = 1.0.into();
+
+        let res = api.close_position(&position);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn create_position() {
+        let api = get_api();
+
         let mut position = CreatePosition::default();
+        position.currency_code = "AUD".to_string().into();
         position.direction = Direction::Buy.into();
         position.epic = "CS.D.BITCOIN.CFD.IP".to_string().into();
         position.expiry = "-".to_string().into();
@@ -127,9 +177,56 @@ mod tests {
         position.order_type = OrderType::Market.into();
         position.size = 1.0.into();
 
-        // Get deal confirmation
+        let res = api.create_position(&position);
+        assert_eq!(res.is_ok(), true);
+    }
 
-        // Close deal to clean up
+    #[test]
+    fn update_position() {
+        // TODO: design test
+    }
+
+    #[test]
+    fn get_sprint_market_positions() {
+        let api = get_api();
+        let res = api.get_sprint_market_positions();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn create_sprint_market_position() {
+        let api = get_api();
+        
+        let mut position = CreateSprintMarketPosition::default();
+        position.direction = Direction::Buy.into();
+        position.epic = "CS.D.BITCOIN.CFD.IP".to_string().into();
+        position.expiry_period = SprintMarketExpiryPeriod::SixtyMinutes.into();
+        position.size = 1.0.into();
+
+        let res = api.create_sprint_market_position(&position);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn get_working_orders() {
+        let api = get_api();
+        let res = api.get_working_orders();
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn create_working_order() {
+        // TODO: design test
+    }
+
+    #[test]
+    fn delete_working_order() {
+        // TODO: design test
+    }
+
+    #[test]
+    fn update_working_order() {
+        // TODO: design test
     }
 
     #[test]

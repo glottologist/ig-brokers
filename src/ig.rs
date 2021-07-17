@@ -93,19 +93,21 @@ impl IG {
 		Ok(data)
 	}
 
-// 	/// GET /positions
-// 	/// Returns all open positions for the active account.
-// 	pub fn get_positions(&self) -> Positions {
-// 		let endpoint = String::from("/positions");
-// 		self.client.get_signed(&endpoint)
-// 	}
+	/// GET /positions
+	/// Returns all open positions for the active account.
+	pub fn get_positions(&self) -> Result<Positions, Error> {
+		let endpoint = "/positions".to_string();
+		let data: Positions = self.client.get_signed(&endpoint, 2, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// GET /positions/{dealId}
-// 	/// Returns an open position for the active account by deal identifier.
-// 	pub fn get_positions_with_deal(&self, deal_id: &String) -> Position {
-// 		let endpoint = format!("/positions/{}", deal_id);
-// 		self.client.get_signed(&endpoint)
-// 	}
+	/// GET /positions/{dealId}
+	/// Returns an open position for the active account by deal identifier.
+	pub fn get_position(&self, deal_id: &String) -> Result<Position, Error> {
+		let endpoint = format!("/positions/{}", deal_id);
+		let data: Position = self.client.get_signed(&endpoint, 2, None::<()>)?;
+		Ok(data)
+	}
 
 	/// DELETE /positions/otc
 	/// Closes one or more OTC positions.
@@ -123,54 +125,61 @@ impl IG {
 		Ok(data)
 	}
 
-// 	/// PUT /positions/otc/{dealId}
-// 	/// Updates an OTC position.
-// 	pub fn update_position(&self, deal_id: &String, req: &UpdatePosition) {
-// 		let endpoint = format!("/positions/otc/{}", deal_id);
-// 		self.client.put_signed(&endpoint, &Some(req))
-// 	}
+	/// PUT /positions/otc/{dealId}
+	/// Updates an OTC position.
+	pub fn update_position(&self, deal_id: &String, req: &UpdatePosition) -> Result<DealRef, Error> {
+		let endpoint = format!("/positions/otc/{}", deal_id);
+		let data: DealRef = self.client.put_signed(&endpoint, 2, Some(req))?;
+		Ok(data)
+	}
 
-// 	/// GET /positions/sprintmarkets
-// 	/// A list of sprint market positions.
-// 	pub fn get_sprint_market_positions(&self) -> SprintMarketPositions {
-// 		let endpoint = String::from("/positions/sprintmarkets");
-// 		self.client.get_signed(&endpoint)
-// 	}
+	/// GET /positions/sprintmarkets
+	/// A list of sprint market positions.
+	pub fn get_sprint_market_positions(&self) -> Result<SprintMarketPositions, Error> {
+		let endpoint = "/positions/sprintmarkets".to_string();
+		let data: SprintMarketPositions = self.client.get_signed(&endpoint, 2, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// POST /positions/sprintmarkets
-// 	/// Creates a sprint market position.
-// 	pub fn create_sprint_market_position(&self, req: &CreateSprintMarketPosition) -> DealRef {
-// 		let endpoint = String::from("/positions/sprintmarkets");
-// 		self.client.post_signed(&endpoint, &req)
-// 	}
+	/// POST /positions/sprintmarkets
+	/// Creates a sprint market position.
+	pub fn create_sprint_market_position(&self, req: &CreateSprintMarketPosition) -> Result<DealRef, Error> {
+		let endpoint = "/positions/sprintmarkets".to_string();
+		let data: DealRef = self.client.post_signed(&endpoint, 1, Some(req))?;
+		Ok(data)
+	}
 
-// 	/// GET /workingorders
-// 	/// Returns all open working orders for the active account.
-// 	pub fn get_working_orders(&self) -> WorkingOrders {
-// 		let endpoint = String::from("/workingorders");
-// 		self.client.get_signed(&endpoint)
-// 	}
+	/// GET /workingorders
+	/// Returns all open working orders for the active account.
+	pub fn get_working_orders(&self) -> Result<WorkingOrders, Error> {
+		let endpoint = "/workingorders".to_string();
+		let data: WorkingOrders = self.client.get_signed(&endpoint, 2, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// POST /workingorders/otc
-// 	/// Creates an OTC working order.
-// 	pub fn create_working_order(&self, req: &CreateWorkingOrder) -> DealRef {
-// 		let endpoint = String::from("/workingorders/otc");
-// 		self.client.post_signed(&endpoint, req)
-// 	}
+	/// POST /workingorders/otc
+	/// Creates an OTC working order.
+	pub fn create_working_order(&self, req: &CreateWorkingOrder) -> Result<DealRef, Error> {
+		let endpoint = "/workingorders/otc".to_string();
+		let data: DealRef = self.client.post_signed(&endpoint, 2, Some(req))?;
+		Ok(data)
+	}
 
-// 	/// DELETE /workingorders/otc/{dealId}
-// 	/// Deletes an OTC working order.
-// 	pub fn delete_working_order(&self, deal_id: &String) -> DealRef {
-// 		let endpoint = format!("/workingorders/otc/{}", deal_id);
-// 		self.client.delete_signed(&endpoint, &None::<()>)
-// 	}
+	/// DELETE /workingorders/otc/{dealId}
+	/// Deletes an OTC working order.
+	pub fn delete_working_order(&self, deal_id: &String) -> Result<DealRef, Error> {
+		let endpoint = format!("/workingorders/otc/{}", deal_id);
+		let data: DealRef = self.client.delete_signed(&endpoint, 2, None::<()>)?;
+		Ok(data)
+	}
 
-// 	/// PUT /workingorders/otc/{dealId}
-// 	/// Updates an OTC working order.
-// 	pub fn update_working_order(&self, deal_id: &String, req: &UpdateWorkingOrder) -> DealRef {
-// 		let endpoint = format!("/workingorders/otc/{}", deal_id);
-// 		self.client.put_signed(&endpoint, &Some(req))
-// 	}
+	/// PUT /workingorders/otc/{dealId}
+	/// Updates an OTC working order.
+	pub fn update_working_order(&self, deal_id: &String, req: &UpdateWorkingOrder) -> Result<DealRef, Error> {
+		let endpoint = format!("/workingorders/otc/{}", deal_id);
+		let data: DealRef = self.client.put_signed(&endpoint, 2, Some(req))?;
+		Ok(data)
+	}
 
 	/// GET /operations/application
 	/// Returns a list of client owned applications.
