@@ -13,12 +13,26 @@ Cargo.toml
 ig-brokers = { git = "https://github.com/satnav/ig-brokers.git" }
 ```
 
+.env
+```
+IG_ACCOUNT_ID=<Your IG Account Id>
+IG_API_KEY=<Your IG API KEY>
+IG_USERNAME=<Your IG Username>
+IG_PASSWORD=<Your IG Password>
+```
+
 Example
 ```rust
+use dotenv::dotenv;
 use ig_brokers::api::IG;
 use ig_brokers::models::*;
+use std::env;
 
 fn main() {
+	// Load .env file
+	dotenv().unwrap();
+
+	// Extract environment variables
 	let account_id = env::var("IG_ACCOUNT_ID").unwrap();
 	let api_key = env::var("IG_API_KEY").unwrap();
 	let username = env::var("IG_USERNAME").unwrap();

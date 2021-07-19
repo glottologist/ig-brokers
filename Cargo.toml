@@ -1,5 +1,11 @@
 [package]
 name = "ig-brokers"
+description = "Rust library for the IG REST API"
+homepage = "https://satnav.github.io/ig-brokers"
+documentation = "https://satnav.github.io/ig-brokers"
+repository = "https://github.com/satnav/ig-brokers"
+keywords = ["ig", "api", "brokers", "investing", "trading"]
+categories = ["api-bindings"]
 version = "0.0.1"
 authors = ["Matthew Satti <matthewsatti@gmail.com>"]
 edition = "2018"
