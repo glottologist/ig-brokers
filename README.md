@@ -49,3 +49,9 @@ fn main() {
 	};
 }
 ```
+
+## Tests
+Not all tests have been implemented yet, and the ones that have are fairly basic.
+Becuase the IG Web API has a rate limiter, majority will fail if you try to run them all at one.
+Unfortunately you will need to test them one by one and wait a minute if you get an error.
+Additionally you will need to execute the tests during an active trading period (e.g. weekdays) otherwise some may fail as well.
