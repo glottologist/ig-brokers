@@ -50,7 +50,9 @@ impl Client {
             req = req.query(&query);
         }
 
+        println!("Request: {:?}", req);
         let res = req.send()?;
+        println!("Response: {:?}", res);
         Ok(res.json::<T>()?)
     }
 
@@ -85,7 +87,9 @@ impl Client {
             req = req.json(&data);
         }
 
+        println!("Request: {:?}", req);
         let res = req.send()?;
+        println!("Response: {:?}", res);
         Ok(res.json::<T>()?)
     }
 
@@ -106,7 +110,9 @@ impl Client {
             req = req.json(&data);
         }
 
+        println!("Request: {:?}", req);
         let res = req.send()?;
+        println!("Response: {:?}", res);
         Ok(res.json::<T>()?)
     }
 
