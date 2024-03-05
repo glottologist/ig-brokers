@@ -134,6 +134,8 @@ impl Client {
             .headers(headers)
             .json(&login)
             .send()?;
+        println!("Login res {:?}", res);
+
         res.json::<LoginRes>()
     }
 
