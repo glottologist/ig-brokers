@@ -2,6 +2,7 @@ use crate::config::Config;
 use crate::models::{LoginReq, LoginRes};
 use reqwest::blocking::RequestBuilder;
 use reqwest::header::HeaderMap;
+use reqwest::header::HeaderValue;
 use reqwest::Error;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -136,7 +137,10 @@ impl Client {
         let token_res = self.get_token()?;
         //let authorization = format!("Bearer {}", token.oauth_token.access_token);
 
-        let sec_token = token_res.headers().get("X-SECURITY-TOKEN").unwrap();
+        let sec_token: HeaderValue = match token_res.headers().get("X-SECURITY-TOKEN") {
+            Some(hv) => hv.clone(),
+            None => HeaderValue::from_str("").unwrap(),
+        };
 
         let mut headers = HeaderMap::new();
         headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
