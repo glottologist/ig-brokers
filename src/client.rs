@@ -116,7 +116,7 @@ impl Client {
         Ok(res.json::<T>()?)
     }
 
-    fn get_token(&self) -> Result<LoginRes, Error> {
+    fn get_token(&self) -> Result<reqwest::blocking::Response, reqwest::Error> {
         let login = LoginReq {
             identifier: self.username.clone(),
             password: self.password.clone(),
@@ -125,28 +125,24 @@ impl Client {
         let mut headers = HeaderMap::new();
         headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
         headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
-        headers.insert("VERSION", "3".parse().unwrap());
+        headers.insert("VERSION", "2".parse().unwrap());
 
         let url = get_url(&self.config, &"/session".into());
-        let res = self
-            .client
-            .post(&url)
-            .headers(headers)
-            .json(&login)
-            .send()?;
-        println!("Login res {:?}", res);
-
-        res.json::<LoginRes>()
+        println!("Login url {}", url);
+        self.client.post(&url).headers(headers).json(&login).send()
     }
 
     fn set_headers(&self, req: RequestBuilder, version: u8) -> Result<RequestBuilder, Error> {
-        let token = self.get_token()?;
-        let authorization = format!("Bearer {}", token.oauth_token.access_token);
+        let token_res = self.get_token()?;
+        //let authorization = format!("Bearer {}", token.oauth_token.access_token);
+
+        let sec_token = token_res.headers().get("X-SECURITY-TOKEN").unwrap();
 
         let mut headers = HeaderMap::new();
         headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
         headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
-        headers.insert("Authorization", authorization.parse().unwrap());
+        headers.insert("X-SECURITY-TOKEN", sec_token.clone());
+        //headers.insert("Authorization", authorization.parse().unwrap());
         headers.insert("VERSION", version.to_string().parse().unwrap());
         Ok(req.headers(headers))
     }
