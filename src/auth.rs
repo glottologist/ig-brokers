@@ -25,7 +25,9 @@ impl Authentication {
         password: String,
         config: Config,
     ) -> Self {
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::blocking::Client::builder()
+            .danger_accept_invalid_certs(true)
+            .build().unwrap();
         let login_token = Self::login(
             &account_id,
             &api_key,
