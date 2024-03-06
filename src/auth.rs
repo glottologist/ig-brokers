@@ -1,11 +1,8 @@
 use crate::config::Config;
-use crate::models::{LoginReq};
-
+use crate::models::LoginReq;
 
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
-
-
 
 use std::option::Option;
 
@@ -65,17 +62,16 @@ impl Authentication {
             password: password.to_owned(),
         };
 
-        println!("Login  username {}", username);
-        println!("Login  password {}", password);
+        println!("Login   {:?}", login);
         let mut headers = HeaderMap::new();
         headers.insert("X-IG-API-KEY", api_key.parse().unwrap());
         headers.insert("IG-ACCOUNT-ID", account_id.parse().unwrap());
-        headers.insert("VERSION", "2".parse().unwrap());
+        headers.insert("VERSION", "1".parse().unwrap());
 
         let url = Self::get_url(config, &"/session".into());
         println!("Login url {}", url);
         let req = client.post(&url).headers(headers).json(&login);
-        println!("Login request {:?}",req);
+        println!("Login request {:?}", req);
         let login_response = req.send();
 
         println!("Login response {:?}", login_response);
