@@ -14,8 +14,7 @@ impl Config {
 
     pub fn demo() -> Config {
         Config {
-            //base_url: String::from("demo-api.ig.com/gateway/deal"),
-            base_url: String::from("localhost:8443/gateway/deal"),
+            base_url: String::from("demo-api.ig.com/gateway/deal"),
         }
     }
 }
