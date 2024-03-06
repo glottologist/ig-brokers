@@ -74,7 +74,9 @@ impl Authentication {
 
         let url = Self::get_url(config, &"/session".into());
         println!("Login url {}", url);
-        let login_response = client.post(&url).headers(headers).json(&login).send();
+        let req = client.post(&url).headers(headers).json(&login);
+        println!("Login request {:?}",req);
+        let login_response = req.send();
 
         println!("Login response {:?}", login_response);
         match login_response {
