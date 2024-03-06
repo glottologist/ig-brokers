@@ -1,5 +1,6 @@
 use crate::config::Config;
 use crate::models::{LoginReq, LoginRes};
+use derive_more::Display;
 use reqwest::blocking::RequestBuilder;
 use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
@@ -8,6 +9,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::option::Option;
 
+#[derive(Debug)]
 pub struct Authentication {
     pub account_id: String,
     pub api_key: String,
@@ -74,6 +76,7 @@ impl Authentication {
         println!("Login url {}", url);
         let login_response = client.post(&url).headers(headers).json(&login).send();
 
+        println!("Login response {:?}", login_response);
         match login_response {
             Ok(r) => r.headers().get("X-SECURITY-TOKEN").cloned(),
             Err(_) => None,
