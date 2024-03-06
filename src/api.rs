@@ -126,7 +126,10 @@ impl IG {
 	/// Creates an OTC position.
 	pub fn create_position(&self, req: &CreatePosition) -> Result<DealRef, Error> {
 		let endpoint: String = "/positions/otc".into();
+        println!("Data: {:?}", req);
+
 		let data: DealRef = self.client.post_signed(&endpoint, 2, Some(req))?;
+
 		Ok(data)
 	}
 

@@ -112,6 +112,7 @@ impl Client {
         }
 
         println!("Request: {:?}", req);
+
         let res = req.send()?;
         println!("Response: {:?}", res);
         Ok(res.json::<T>()?)
