@@ -124,6 +124,8 @@ impl Client {
             password: self.password.clone(),
         };
 
+        println!("Login  username {}", self.username.clone());
+        println!("Login  password {}", self.password.clone());
         let mut headers = HeaderMap::new();
         headers.insert("X-IG-API-KEY", self.api_key.parse().unwrap());
         headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
