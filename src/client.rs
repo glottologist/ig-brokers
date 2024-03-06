@@ -142,6 +142,7 @@ impl Client {
             Some(hv) => hv.clone(),
             None => HeaderValue::from_str("").unwrap(),
         };
+        println!("Token Response {:?}", sec_token);
 
         let mut headers = HeaderMap::new();
         headers.insert("IG-ACCOUNT-ID", self.account_id.parse().unwrap());
@@ -149,6 +150,7 @@ impl Client {
         headers.insert("X-SECURITY-TOKEN", sec_token.clone());
         //headers.insert("Authorization", authorization.parse().unwrap());
         headers.insert("VERSION", version.to_string().parse().unwrap());
+        println!("Headers {:?}", headers);
         Ok(req.headers(headers))
     }
 }
