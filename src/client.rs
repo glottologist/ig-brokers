@@ -1,9 +1,9 @@
 use crate::auth::Authentication;
-use crate::config::Config;
-use crate::models::{LoginReq, LoginRes};
+
+
 use reqwest::blocking::RequestBuilder;
 use reqwest::header::HeaderMap;
-use reqwest::header::HeaderValue;
+
 use reqwest::Error;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
